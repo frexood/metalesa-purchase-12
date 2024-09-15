@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="purchase_picking_status_view_search" model="ir.ui.view">
+            <field name="name">purchase.picking.status.view.search</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[last()]" position="before">
+                    <group expand="0">
+                        <filter string="No Recibido" name="not_received"
+                                domain="[('picking_state','=','not_received')]"/>
+                        <filter string="Parcial" name="partially_received"
+                                domain="[('picking_state','=','partially_received')]"/>
+                        <filter string="Cancelado" name="cancel" domain="[('picking_state','=','cancel')]"/>
+                        <filter string="Realizado" name="done" domain="[('picking_state','=','done')]"/>
+                        <filter string="Agrupar" name="picking_state" context="{'group_by':'picking_state'}"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
