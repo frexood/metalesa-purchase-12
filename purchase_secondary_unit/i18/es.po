@@ -1,0 +1,97 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* purchase_secondary_unit
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-03-27 08:09+0000\n"
+"PO-Revision-Date: 2020-03-27 10:21+0100\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.0.6\n"
+"Last-Translator: \n"
+"Language: es\n"
+
+#. module: purchase_secondary_unit
+#: code:addons/purchase_secondary_unit/models/product.py:21
+#: model:ir.model.fields,help:purchase_secondary_unit.field_product_product__uop_coeff
+#: model:ir.model.fields,help:purchase_secondary_unit.field_product_template__uop_coeff
+#, python-format
+msgid ""
+"Coefficient to convert default Purchase Unit of Measure to\n"
+"            Secondary Unit of Purchase\n"
+" uop = uom * coeff"
+msgstr "Coeficiente para convertir por la Unidad de Medida por defecto a Unidad de Compra secundaria: uop = uom * coeff"
+
+#. module: purchase_secondary_unit
+#: model:ir.model,name:purchase_secondary_unit.model_product_template
+msgid "Product Template"
+msgstr "Plantilla de producto"
+
+#. module: purchase_secondary_unit
+#: code:addons/purchase_secondary_unit/models/purchase_order.py:27
+#: model:ir.model.fields,field_description:purchase_secondary_unit.field_purchase_order_line__product_uop
+#, python-format
+msgid "Product UoP"
+msgstr "UdC de producto"
+
+#. module: purchase_secondary_unit
+#: model:ir.model,name:purchase_secondary_unit.model_purchase_order_line
+msgid "Purchase Order Line"
+msgstr "Línea pedido de compra"
+
+#. module: purchase_secondary_unit
+#: code:addons/purchase_secondary_unit/models/product.py:19
+#: model:ir.model.fields,field_description:purchase_secondary_unit.field_product_product__uop_coeff
+#: model:ir.model.fields,field_description:purchase_secondary_unit.field_product_template__uop_coeff
+#, python-format
+msgid "Purchase Unit of Measure -> 2UoP Coeff"
+msgstr "Coeficiente UdM -> UdC"
+
+#. module: purchase_secondary_unit
+#: code:addons/purchase_secondary_unit/models/purchase_order.py:20
+#: model:ir.model.fields,field_description:purchase_secondary_unit.field_purchase_order_line__product_uop_qty
+#, python-format
+msgid "Quantity (UoP)"
+msgstr "Cantidad (UdC)"
+
+#. module: purchase_secondary_unit
+#: code:addons/purchase_secondary_unit/models/product.py:12
+#: model:ir.model.fields,field_description:purchase_secondary_unit.field_product_product__uop_id
+#: model:ir.model.fields,field_description:purchase_secondary_unit.field_product_template__uop_id
+#, python-format
+msgid "Secondary Unit of Purchase"
+msgstr "Unidad de Compra secundaria"
+
+#. module: purchase_secondary_unit
+#: code:addons/purchase_secondary_unit/models/product.py:13
+#: model:ir.model.fields,help:purchase_secondary_unit.field_product_product__uop_id
+#: model:ir.model.fields,help:purchase_secondary_unit.field_product_template__uop_id
+#, python-format
+msgid ""
+"Specify a unit of measure here if purchasing is made in another\n"
+"            unit of measure category than inventory. Keep empty to use the\n"
+"            default unit of measure."
+msgstr ""
+"Especificar una unidad de medida si la compra es hecha en otra \n"
+"            categoría de unidad de medida. Dejar vacío para usar la \n"
+"            unidad de medida por defecto."
+
+#. module: purchase_secondary_unit
+#: code:addons/purchase_secondary_unit/models/purchase_order.py:32
+#: model:ir.model.fields,field_description:purchase_secondary_unit.field_purchase_order_line__product_uop_coeff
+#, python-format
+msgid "UoM -> UoP Coeff"
+msgstr "Coeficiente UdM -> UdC"
+
+#. module: purchase_secondary_unit
+#: code:addons/purchase_secondary_unit/models/purchase_order.py:38
+#: model:ir.model.fields,field_description:purchase_secondary_unit.field_purchase_order_line__price_unit_uop
+#, python-format
+msgid "UoP Unit Price"
+msgstr "UdC precio unitario"
