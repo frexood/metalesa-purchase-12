@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="metalesa_supplier_evaluation_form_view" model="ir.ui.view">
+            <field name="name">Evaluacion Proveedor</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='title']" position="after">
+                    <field name="sgc"/>
+                </xpath>
+
+                <xpath expr="//notebook" position="inside">
+                    <page attrs="{'invisible':[('supplier','=',False)]}" string="Evaluación">
+                        <group>
+                            <field name="calificacion_proveedor_ids" nolabel="1"
+                                   context="{'supplier':context.get('id',False)}">
+                                <tree editable="bottom">
+                                    <button icon="fa-caret-square-o-right" string="Calcular Fijos"
+                                            name="calcular_valores_staticos" type="object"></button>
+                                    <field name="year"></field>
+                                    <field name="supplier_id" invisible="1"></field>
+                                    <field name="calidad_producto"></field>
+                                    <field name="calidad_servicio"></field>
+                                    <field name="disponiblidad"></field>
+                                    <field name="cond_pago"></field>
+                                    <field name="precio"></field>
+                                    <field name="plazo_entrega"></field>
+                                    <field name="atencion_comercial"></field>
+                                    <field name="resolucion_problemas"></field>
+                                    <field name="nc"></field>
+                                    <field name="sgc"></field>
+                                    <field name="personal_tecnico"></field>
+                                    <field name="total"></field>
+                                    <field name="calificacion"></field>
+                                    <field name="calificacion" invisible="1"></field>
+                                </tree>
+                            </field>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="metalesa_supplier_evaluation_config_tree_view" model="ir.ui.view">
+            <field name="name">Evaluacion Proveedor Config</field>
+            <field name="model">metalesa.supplier.evaluation.config</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="parameter_field"/>
+                    <field name="peso"/>
+                    <field name="user_logic"/>
+                    <field name="config_range"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="metalesa_supplier_evaluation_config_form_view" model="ir.ui.view">
+            <field name="name">Evaluacion Proveedor Config</field>
+            <field name="model">metalesa.supplier.evaluation.config</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="parameter_field"></field>
+                        <field name="peso"></field>
+                        <field name="user_logic"></field>
+                        <field name="config_range"
+                               attrs="{'invisible':[('user_logic','in',['user',False])],'required':[('user_logic','=','logic')]}"/>
+                    </group>
+                    <group attrs="{'invisible':[('config_range','in',['n',False])]}">
+                        <field name="config_logic_ids" nolabel="1" context="{'parameter_field':parameter_field}">
+                            <tree editable="bottom">
+                                <field name="config_logic_id" invisible="1"/>
+                                <field name="parameter_field" invisible="1"/>
+                                <field name="range_min"/>
+                                <field name="range_max"/>
+                                <field name="puntuacion"
+                                       attrs="{'invisible':[('parameter_field','=','calificacion')]}"/>
+                                <field name="puntuacion_str"
+                                       attrs="{'invisible':[('parameter_field','!=','calificacion')]}"/>
+                            </tree>
+                        </field>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="metalesa_supplier_evaluation_config_action" model="ir.actions.act_window">
+            <field name="name">Puntuaciones</field>
+            <field name="res_model">metalesa.supplier.evaluation.config</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click para crear la configuración de la Evaluación del proveedor.
+                </p>
+            </field>
+        </record>
+
+        <menuitem
+                id="metalesa_supplier_evaluation_config_action_menu"
+                parent="purchase.menu_product_in_config_purchase"
+                name="Puntuaciones"
+                action="metalesa_supplier_evaluation_config_action"
+                sequence="5"/>
+
+        <!-- Vista General de las evaluaciones -->
+        <record id="metalesa_supplier_evaluation_general_search_view" model="ir.ui.view">
+            <field name="name">Resultado Evaluaciones</field>
+            <field name="model">metalesa.supplier.evaluation</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="year"/>
+                    <field name="supplier_id"/>
+                    <field name="calidad_producto"/>
+                    <field name="calidad_servicio"/>
+                    <field name="disponiblidad"/>
+                    <field name="cond_pago"/>
+                    <field name="precio"/>
+                    <field name="plazo_entrega"/>
+                    <field name="atencion_comercial"/>
+                    <field name="resolucion_problemas"/>
+                    <field name="nc"/>
+                    <field name="sgc"/>
+                    <field name="personal_tecnico"/>
+                    <field name="total"/>
+                    <field name="calificacion"/>
+                    <group expand="0">
+                        <filter string="Proveedor" name="proveedor" domain="[]" context="{'group_by' : 'supplier_id'}"/>
+                        <filter string="Año" name="year" context="{'group_by': 'year'}"/>
+                        <filter string="Calificacion" name="qualify" context="{'group_by': 'calificacion'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="metalesa_supplier_evaluation_general_tree_view" model="ir.ui.view">
+            <field name="name">Resultado Evaluaciones</field>
+            <field name="model">metalesa.supplier.evaluation</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom" create="0" edit="0">
+                    <field name="supplier_id"/>
+                    <field name="tag_ids"/>
+                    <field name="year"/>
+                    <field name="calidad_producto"/>
+                    <field name="calidad_servicio"/>
+                    <field name="disponiblidad"/>
+                    <field name="cond_pago"/>
+                    <field name="precio"/>
+                    <field name="plazo_entrega"/>
+                    <field name="atencion_comercial"/>
+                    <field name="resolucion_problemas"/>
+                    <field name="nc"/>
+                    <field name="sgc"/>
+                    <field name="personal_tecnico"/>
+                    <field name="total"/>
+                    <field name="calificacion"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="metalesa_supplier_evaluation_general_action" model="ir.actions.act_window">
+            <field name="name">Resultado Evaluaciones</field>
+            <field name="res_model">metalesa.supplier.evaluation</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem
+                id="metalesa_supplier_evaluation_general_action_menu"
+                parent="purchase.menu_procurement_management"
+                name="Resultado Evaluaciones"
+                action="metalesa_supplier_evaluation_general_action"
+                sequence="30"/>
+    </data>
+</odoo>
