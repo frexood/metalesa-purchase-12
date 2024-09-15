@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="purchase_order_tree_colors_status_visiion" model="ir.ui.view">
+            <field name="name">purchase.order.tree.colors.status.visiion.view.tree</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase_picking_state.purchase_order_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='date_planned']" position="after">
+                    <field name="maximum_planned_date"/>
+                </xpath>
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="decoration-muted">
+                        picking_state == 'cancel'
+                    </attribute>
+                    <attribute name="decoration-success">
+                        picking_state == 'done'
+                    </attribute>
+                    <attribute name="decoration-danger">
+                        picking_state == 'not_received'
+                    </attribute>
+                    <attribute name="decoration-info">
+                        picking_state == 'partially_received'
+                    </attribute>
+                    <attribute name="decoration-danger">
+                        (date_planned &lt; current_date) and (state in ['purchase', 'done']) and (picking_state not in ['done', 'cancel'])
+                    </attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
