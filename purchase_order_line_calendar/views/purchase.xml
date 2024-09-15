@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="purchase_order_line_form_calendar_values" model="ir.ui.view">
+        <field name="name">Pedido de compra calendario</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='order_line']/tree/field[@name='date_planned']" position="after">
+                <field name="planned_hour" invisible="1" widget="float_time"/>
+                <field name="load_time" invisible="1"/>
+                <field name="fecha_ini_des" invisible="1"/>
+                <field name="fecha_fin_des" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/form//field[@name='company_id']" position="after">
+                <field name="planned_hour" widget="float_time"/>
+                <field name="load_time"/>
+                <field name="fecha_ini_des" invisible="1"/>
+                <field name="fecha_fin_des" invisible="1"/>
+            </xpath>
+            
+        </field>
+    </record>
+
+    <record id="purchase_line_tree_calendar_view_values" model="ir.ui.view">
+        <field name="name">Lineas de Pedido</field>
+        <field name="model">purchase.order.line</field>
+        <field name="inherit_id" ref="purchase_order_line_view.purchase_line_form_view_metalesa_custom_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_planned']" position="after">
+                <field name="planned_hour" widget="float_time"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="purchase_line_tree_calendar_view_main" model="ir.ui.view">
+        <field name="name">Lineas de Pedido</field>
+        <field name="model">purchase.order.line</field>
+        <field name="arch" type="xml">
+            <calendar
+                    date_start="fecha_ini_des"
+                    date_stop="fecha_fin_des"
+                    event_open_popup="0"
+                    color="order_id"
+                    mode="week">
+                <field name="order_id"/>
+                <field name="partner_id_rel"/>
+                <field name="product_id"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="purchase_order_line_view.purchase_line_form_view" model="ir.actions.act_window">
+        <field name="view_mode">tree,form,calendar</field>
+    </record>
+</odoo>

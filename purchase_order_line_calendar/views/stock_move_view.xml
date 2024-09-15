@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="stock_move_tree_capacidad_carga_descarga_tree_view" model="ir.ui.view">
+            <field name="name">Capacidad Carga/Descarga</field>
+            <field name="model">stock.move</field>
+            <field name="arch" type="xml">
+                <tree create="0">
+                    <field name="picking_id"/>
+                    <field name="purchase_id_calendar"/>
+                    <field name="picking_date_done"/>
+                    <field name="partner_id" string="Proveedor"></field>
+                    <field name="analytic_account_id"></field>
+                    <field name="location_dest_id"/>
+                    <field name="product_uom_qty"/>
+                    <field name="product_uom" string="Unit of Measure" groups="uom.group_uom"/>
+                    <field name="state"/>
+                    <field name="fecha_ini_des" invisible="1"/>
+                    <field name="fecha_fin_des" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="stock_move_tree_capacidad_carga_descarga_calendar_view" model="ir.ui.view">
+            <field name="name">Lineas de Pedido</field>
+            <field name="model">stock.move</field>
+            <field name="arch" type="xml">
+                <calendar date_start="fecha_ini_des" date_stop="fecha_fin_des">
+                    <field name="picking_id"/>
+                    <field name="supplier_id"/>
+                    <field name="product_id"/>
+                </calendar>
+            </field>
+        </record>
+
+        <record id="action_stock_move_tree_capacidad_carga_descarga_tree_view" model="ir.actions.server">
+            <field name="name">Capacidad Carga/Descarga</field>
+            <field name="model_id" ref="model_stock_move"/>
+            <field name="code">
+                action = env['stock.move'].get_cap_des()
+            </field>
+        </record>
+
+        <record id="action_stock_move_tree_capacidad_carga_descarga_tree_view" model="ir.actions.act_window">
+            <field name="name">Capacidad Carga/Descarga</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.move</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,calendar</field>
+            <field name="domain">[('es_recepcion','=', True),('mrp_galvanizado_id','=',False),('purchase_line_id','!=',False)]</field>
+            <field name="help" type="html">
+            <!--('picking_type_id','=','%(stock.picking_type_in)d'),-->
+                <p>
+          Aquí puede realizar un seguimiento de todas
+          las líneas de órdenes de compra donde la
+          facturación se basa en las líneas de orden
+          de compra y para las cuales aún no ha
+          recibido una factura de proveedor.
+          Puede generar un borrador de factura de
+          proveedor en función de las líneas de esta lista.
+                </p>
+            </field>
+        </record>
+
+        <!-- <record id="action_stock_move_tree_capacidad_carga_descarga_tree_view_tree" model="ir.actions.act_window.view">
+          <field name="view_mode">tree</field>
+          <field name="view_id" ref="stock_move_tree_capacidad_carga_descarga_tree_view" />
+          <field name="act_window_id" ref="action_stock_move_tree_capacidad_carga_descarga_tree_view" />
+            </record> -->
+
+        <menuitem action="action_stock_move_tree_capacidad_carga_descarga_tree_view" id="menu_stock_move_tree_capacidad_carga_descarga_tree_view" parent="stock.menu_stock_warehouse_mgmt" string="Capacidad Carga/Descarga" sequence="2"/>
+    </data>
+</odoo>
