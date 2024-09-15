@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="purchase_order_responsability_view_form" model="ir.ui.view">
+            <field name="name">purchase.order.responsability.view.form</field>
+            <field name="model">purchase.order.responsability</field>
+            <field name="arch" type="xml">
+                <form>
+                    <div>
+                        <group name="responsabilidad_body">
+                            <field name="pedido_compra_id" readonly="1"/>
+                            <field name="responsabilidad_selection" widget="radio"/>
+                            <field name="explicacion_ausencia" attrs="{'invisible':[('responsabilidad_selection', '=', 'aceptar')],
+                                                                        'required':[('responsabilidad_selection', '=', 'rechazar')] }"/>
+                        </group>
+                    </div>
+                    <footer>
+                        <button name="confirmar"  type="object" string="Confirmar" class="oe_highlight"/>
+                        <button name="cancel" string="Cancel" special="cancel" class="oe_link"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>
