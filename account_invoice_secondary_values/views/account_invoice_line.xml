@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+       <record id="account_invoice_line_secondary_values" model="ir.ui.view">
+           <field name="name">account.invoice.line.secondary.values</field>
+           <field name="model">account.invoice</field>
+           <field name="inherit_id" ref="account.invoice_supplier_form"/>
+           <field name="arch" type="xml">
+               <xpath expr="//field[@name='price_unit']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+               </xpath>
+               <xpath expr="//field[@name='uom_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+               </xpath>
+               <xpath expr="//field[@name='quantity']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+               </xpath>
+              <xpath expr="//field[@name='price_unit']" position="after">
+                  <field name="cantidad_recibida" string="Cantidad recibida"/>
+                  <field name="product_uop_id" string="Unidad de medida UOP"/>
+                  <field name="price_unit_uop" string="Precio Unitario UOP"/>
+               </xpath>
+           </field>
+
+       </record>
+
+    </data>
+</odoo>
