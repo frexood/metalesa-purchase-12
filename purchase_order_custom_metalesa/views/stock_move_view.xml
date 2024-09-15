@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+# (c) 2020 Praxya - Miquel March <mmarch@praxya.es>
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+-->
+<odoo>
+    <data>
+
+        <record id="stock_move_cutom_filter_view" model="ir.ui.view">
+            <field name="name">stock.move.custom.filter.view.line.custom.view</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search/filter[@name='future']" position="after">
+                    <separator/>
+                    <filter name="dos_dias" string="A recibir en 2 días" domain="[('date_planned','&gt;=',datetime.datetime.now()), ('date_planned','&lt;=',(datetime.date.today()+datetime.timedelta(days=2)).strftime('%%Y-%%m-%%d 00:00:00'))]" />
+                    <filter name="cuatro_dias" string="A recibir en 4 días" domain="[('date_planned','&gt;=',datetime.datetime.now()), ('date_planned','&lt;=',(datetime.date.today()+datetime.timedelta(days=4)).strftime('%%Y-%%m-%%d 00:00:00'))]" />
+                    <filter name="siete_dias" string="A recibir en 7 días" domain="[('date_planned','&gt;=',datetime.datetime.now()), ('date_planned','&lt;=',(datetime.date.today()+datetime.timedelta(days=7)).strftime('%%Y-%%m-%%d 00:00:00'))]" />
+                    <filter name="catorce_dias" string="A recibir en 14 días" domain="[('date_planned','&gt;=',datetime.datetime.now()), ('date_planned','&lt;=',(datetime.date.today()+datetime.timedelta(days=14)).strftime('%%Y-%%m-%%d 00:00:00'))]" />
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>
