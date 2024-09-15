@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_purchase_order_search_inherit" model="ir.ui.view">
+            <field name="name">report.purchase.order.search.inherit</field>
+            <field name="model">purchase.report</field>
+            <field name="inherit_id" ref="purchase.view_purchase_order_search"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="project_id"/>
+                </field>
+                <filter name="company" position="after">
+                    <filter string="Proyecto" name="group_main_project_id" context="{'group_by':'project_id'}"/>
+                </filter>
+            </field>
+        </record>
+
+        <record id="view_purchase_order_graph_inherit" model="ir.ui.view">
+            <field name="name">product.month.graph.inherit</field>
+            <field name="model">purchase.report</field>
+            <field name="inherit_id" ref="purchase.view_purchase_order_graph"/>
+            <field name="arch" type="xml">
+                <field name="price_average" position="before">
+                    <field name="price_unit" type="measure"/>
+                    <field name="standard_price" type="measure"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>
