@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="purchase_order_line_form_custom_values" model="ir.ui.view">
+            <field name="name">purchase.order.line.form.custom.values</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='order_line']/tree/field[@name='taxes_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree/field[@name='analytic_tag_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+        
+        <record id="purchase_order_line_attachment_form" model="ir.ui.view">
+            <field name="name">purchase.order.line.attachment.form</field>
+            <field name="model">purchase.order.line</field>
+            <field name="inherit_id" ref="purchase.purchase_order_line_form2"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="inside">
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="purchase_line_form_view_metalesa_custom_tree" model="ir.ui.view">
+            <field name="name">Lineas de Pedido</field>
+            <field name="model">purchase.order.line</field>
+            <field name="arch" type="xml">
+                <tree default_order="create_date desc">
+                    <field name="order_id"/>
+                    <field name="date_order"/>
+                    <field name="date_planned"/>
+                    <field name="partner_id_rel"/>
+                    <field name="account_analytic_id"/>
+                    <field name="product_id"/>
+                    <field name="product_qty"/>
+                    <field name="product_uom" string="Unit of Measure" groups="uom.group_uom"/>
+                    <field name="price_subtotal" sum="Total"/>
+                    <field name="state"/>
+                    <field name="email_id_rel" invisible="1"/>
+                    <field name="name" invisible="1"/>
+                    <field name="product_uom_qty" string="Qty"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="purchase_line_form_view" model="ir.actions.act_window">
+            <field name="name">Lineas de Pedido</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.order.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="purchase.purchase_order_line_search"/>
+            <field name="help" type="html">
+                <p>
+                    Here you can track all the lines of purchase orders where the
+                    invoicing is "Based on Purchase Order Lines", and for which you
+                    have not received a supplier invoice yet. You can generate a
+                    draft supplier invoice based on the lines from this list.
+                </p>
+            </field>
+        </record>
+
+        <record id="purchase_line_form_view_tree" model="ir.actions.act_window.view">
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="purchase_line_form_view_metalesa_custom_tree"/>
+            <field name="act_window_id" ref="purchase_line_form_view"/>
+        </record>
+
+        <menuitem action="purchase_order_line_view.purchase_line_form_view" id="menu_purchase_line_order_view_menu" parent="purchase.menu_procurement_management" string="Líneas de pedido" sequence="10"/>
+    </data>
+</odoo>
