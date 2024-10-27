@@ -12,6 +12,33 @@
 
                 <xpath expr="//notebook" position="inside">
                     <page attrs="{'invisible':[('supplier','=',False)]}" string="Evaluación">
+                        <button name="generate_excel" type="object" string="Exportar a Excel" class="oe_highlight"/>
+                        <div class="oe_title" style="width: 100%; text-align: center;">
+                            <h3>EVALUACIÓN DE PROVEEDORES (PROCEDIMIENTO ACTUALIZADO 2024)</h3>
+                        </div>
+                        <group>
+                            <field name="supplier_qualification_new_ids" nolabel="1"
+                                context="{'supplier':context.get('id',False)}">
+                                <tree editable="bottom">
+                                    <button icon="fa-caret-square-o-right" string="Calcular Fijos"
+                                            name="calcular_valores_staticos" type="object"></button>
+                                    <field name="year"></field>
+                                    <field name="supplier_id" invisible="1"></field>
+                                    <field name="product_service_quality"></field>
+                                    <field name="price"></field>
+                                    <field name="delivery_time"></field>
+                                    <field name="commercial_attention"></field>
+                                    <field name="nc"></field>
+                                    <field name="sgc"></field>
+                                    <field name="environmental_policy"></field>
+                                    <field name="total"></field>
+                                    <field name="qualification"></field>
+                                </tree>
+                            </field>
+                        </group>
+                        <div class="oe_title" style="width: 100%; text-align: center;">
+                            <h3>HISTÓRICO DE EVALUACIONES</h3>
+                        </div>
                         <group>
                             <field name="calificacion_proveedor_ids" nolabel="1"
                                    context="{'supplier':context.get('id',False)}">
@@ -170,5 +197,68 @@
                 name="Resultado Evaluaciones"
                 action="metalesa_supplier_evaluation_general_action"
                 sequence="30"/>
+
+    <!-- Nueva tabla de evaluaciones -->
+        <record id="metalesa_supplier_evaluation_config_new_tree_view" model="ir.ui.view">
+            <field name="name">Evaluacion Proveedor Config Nueva</field>
+            <field name="model">metalesa.supplier.evaluation.config.new</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="parameter_field"/>
+                    <field name="peso"/>
+                    <field name="user_logic"/>
+                    <field name="config_range"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="metalesa_supplier_evaluation_config_new_form_view" model="ir.ui.view">
+            <field name="name">Evaluacion Proveedor Config Nueva</field>
+            <field name="model">metalesa.supplier.evaluation.config.new</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="parameter_field"></field>
+                        <field name="peso"></field>
+                        <field name="user_logic"></field>
+                        <field name="config_range"
+                               attrs="{'invisible':[('user_logic','in',['user',False])],'required':[('user_logic','=','logic')]}"/>
+                    </group>
+                    <group attrs="{'invisible':[('config_range','in',['n',False])]}">
+                        <field name="config_logic_ids" nolabel="1" context="{'parameter_field':parameter_field}">
+                            <tree editable="bottom">
+                                <field name="config_logic_id" invisible="1"/>
+                                <field name="parameter_field" invisible="1"/>
+                                <field name="range_min"/>
+                                <field name="range_max"/>
+                                <field name="puntuacion"
+                                       attrs="{'invisible':[('parameter_field','=','qualification')]}"/>
+                                <field name="puntuacion_str"
+                                       attrs="{'invisible':[('parameter_field','!=','qualification')]}"/>
+                            </tree>
+                        </field>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="metalesa_supplier_evaluation_config_new_action" model="ir.actions.act_window">
+            <field name="name">Puntuaciones Nuevas Evaluaciones</field>
+            <field name="res_model">metalesa.supplier.evaluation.config.new</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click para crear la configuración de las Nuevas Evaluación del proveedor.
+                </p>
+            </field>
+        </record>
+
+        <menuitem
+                id="metalesa_supplier_evaluation_config_new_action_menu"
+                parent="purchase.menu_product_in_config_purchase"
+                name="Puntuaciones Nuevas Evaluaciones"
+                action="metalesa_supplier_evaluation_config_new_action"
+                sequence="6"/>
+
     </data>
 </odoo>
