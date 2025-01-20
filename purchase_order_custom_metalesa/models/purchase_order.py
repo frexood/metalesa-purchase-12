@@ -56,3 +56,10 @@ class PurchaseOrder(models.Model):
         # if (empleado):
         res['user_id'] = self._context.get('uid')
         return res
+
+    @api.returns('self', lambda value: value.id)
+    def copy(self, default=None):
+        if default is None:
+            default = {}
+        default['user_id'] = self.env.user.id
+        return super(PurchaseOrder, self).copy(default)
