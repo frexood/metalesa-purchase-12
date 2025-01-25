@@ -11,6 +11,7 @@
         'purchase',
         'user_permision',
         'partner_custom_metalesa',
+        'purchase_batch_invoicing',
     ],
     'auto_install': True,
 }

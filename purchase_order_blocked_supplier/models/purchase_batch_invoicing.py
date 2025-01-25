@@ -11,8 +11,8 @@ _logger = getLogger(__name__)
 class PurchaseBatchInvoicing(models.TransientModel):
     _inherit = "purchase.batch_invoicing"
 
-    # @api.multi
-    # def action_batch_invoice(self):
-    #     if self.purchase_order_ids[0].partner_id.blocked_supplier:
-    #             raise ValidationError(_("PROVEEDOR BLOQUEADO. PREGUNTA A CONTABILIDAD O CALIDAD"))
-    #     return super(PurchaseBatchInvoicing, self).action_batch_invoice()
+    @api.multi
+    def action_batch_invoice(self):
+        if self.purchase_order_ids[0].partner_id.blocked_supplier:
+                raise ValidationError(_("PROVEEDOR BLOQUEADO. PREGUNTA A CONTABILIDAD O CALIDAD"))
+        return super(PurchaseBatchInvoicing, self).action_batch_invoice()
