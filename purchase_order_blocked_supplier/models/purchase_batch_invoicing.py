@@ -13,6 +13,7 @@ class PurchaseBatchInvoicing(models.TransientModel):
 
     @api.multi
     def action_batch_invoice(self):
-        if self.purchase_order_ids[0].partner_id.blocked_supplier:
+        if self.purchase_order_ids and self.purchase_order_ids[0].partner_id:
+            if self.purchase_order_ids[0].partner_id.blocked_supplier:
                 raise ValidationError(_("PROVEEDOR BLOQUEADO. PREGUNTA A CONTABILIDAD O CALIDAD"))
         return super(PurchaseBatchInvoicing, self).action_batch_invoice()
