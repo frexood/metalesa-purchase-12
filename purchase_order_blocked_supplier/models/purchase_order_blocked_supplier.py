@@ -19,12 +19,12 @@ class PurchaseOrder(models.Model):
         return super(PurchaseOrder, self).validate_purchase()
     
     @api.onchange('partner_id')
-    def _onchange_partner_id(self):
+    def onchange_partner_id(self):
         """ Validación al seleccionar un proveedor en el Pedido de Compra """
         if self.partner_id and self.partner_id.blocked_supplier:
             self.partner_id = False
             raise ValidationError(_("PROVEEDOR BLOQUEADO. PREGUNTA A CONTABILIDAD O CALIDAD"))
-        return super(PurchaseOrder, self)._onchange_partner_id()
+        return super(PurchaseOrder, self).onchange_partner_id()
         
 
 class AccountInvoice(models.Model):
