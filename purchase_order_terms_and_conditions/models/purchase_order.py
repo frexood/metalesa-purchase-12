@@ -76,10 +76,6 @@ class PurchaseOrderExtends(models.Model):
             return ''
 
     def _has_products_without_terms(self, vals=None):
-        """
-        Verifica si alguno de los productos en la orden de compra NO está en `products.terms.and.conditions`.
-        Retorna `True` si hay productos sin términos, `False` si todos los productos tienen términos.
-        """
         _logger.info("Verificando si los productos de la orden tienen términos asignados...")
 
         product_ids = set(self.order_line.mapped('product_id.id')) 
@@ -95,14 +91,21 @@ class PurchaseOrderExtends(models.Model):
             return False  
 
         products_with_terms = self.env['products.terms.and.conditions'].search([
-            ('product_product_id', 'in', list(product_ids))
-        ]).mapped('product_product_id.id')
+            '|',
+            ('product_id.product_variant_ids', 'in', list(product_ids)),  
+            ('product_variant_ids', 'in', list(product_ids)) 
+        ]).mapped('product_variant_ids.id')
 
-        products_without_terms = product_ids - set(products_with_terms)
+        _logger.info("Productos en la orden: %s", product_ids)
+        _logger.info("Productos con términos encontrados: %s", products_with_terms)
 
-        _logger.info("Productos sin términos: %s", products_without_terms)
+        if products_with_terms:
+            _logger.info("Al menos un producto tiene términos, no se asignarán términos a la orden.")
+            return False  
 
-        return bool(products_without_terms)  
+        _logger.info("Ningún producto en la orden tiene términos, se asignarán términos por defecto.")
+        return True 
+
 
     def _clean_html(self, text):
         """
