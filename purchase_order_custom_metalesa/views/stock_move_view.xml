@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <data>
 
         <record id="stock_move_cutom_filter_view" model="ir.ui.view">
             <field name="name">stock.move.custom.filter.view.line.custom.view</field>
@@ -17,5 +16,4 @@
             </field>
         </record>
 
-    </data>
 </odoo>
