@@ -15,6 +15,18 @@
                     <attribute name="class">oe_highlight</attribute>
                 </xpath>
             </field>
+            <field name="company_id" position="before">
+                <label for="date_planned_pc_lines" />
+                <div class="o_row">
+                    <field name="date_planned_pc_lines" widget="date"  class="oe_edit_only"/>
+                    <span>
+                        <button name="add_date_planned" type="object"  string="FP en alguna las línea" class="oe_link"/>
+                        <button name="add_date_all_planned" type="object" string="FP en todas las líneas" class="oe_link"/>
+                    </span>
+                </div>
+            </field>
+
+
         </record>
         <record id="purchase_order_view_form" model="ir.ui.view">
             <field name="name">purchase.order.view.form</field>
