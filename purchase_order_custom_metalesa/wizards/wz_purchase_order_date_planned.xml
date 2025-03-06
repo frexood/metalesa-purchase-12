@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- View wz.purchase.order.date.planned form -->
+    <record id="view_wz_purchase_order_date_planned_form" model="ir.ui.view">
+        <field name="name">view.wz.purchase.order.date.planned.form</field>
+        <field name="model">wz.purchase.order.date.planned</field>
+        <field name="arch" type="xml">
+             <form string="Asignar Fecha planificada">
+                    <field name="id" invisible="1" />
+                    <field name="purchase_order_id" invisible="1"  />
+                    <field name="state" invisible="1"/>
+                    <group>                    
+                        <field name="date_planned_pc_line"  />
+                    </group>
+
+                    <field name="order_line_po_ids" widget="one2many" nolabel="1">
+                        <tree editable="top" delete="false" create="false">
+                            <field name="check_line_porder_id" />
+                            <field name="order_line_purchase_id" invisible="1"/>
+                            
+                            <field name="product_id" readonly="1" force_save="1" string="Producto"/>
+                            <field name="date_planned_pc_line" readonly="1" force_save="1"/>
+                            
+                        </tree>
+                    </field>
+                    <footer>
+                        <button name="assign_date_planned_line" string="Asignar fecha planificada" type="object"  class="oe_highlight"  />
+                        o
+                        <button string="Cancelar" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+        </field>
+    </record>
+
+
+</odoo>

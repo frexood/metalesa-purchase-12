@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- View wz.purchase.order.duplicate.line form -->
+    <record id="view_wz_purchase_order_duplicate_line_form" model="ir.ui.view">
+        <field name="name">view.wz.purchase.order.duplicate.line.form</field>
+        <field name="model">wz.purchase.order.duplicate.line</field>
+        <field name="arch" type="xml">
+            <form string="Wz Purchase Order Duplicate Line">
+                <sheet>
+                        <group>
+                            <group>
+                                <field name="purchase_order_id" readonly="1"/><br/>
+                            </group>
+                             <group>
+                                <field name="purchase_order_dest_id" required="True"  options="{'no_create': True, 'no_create_edit':True}"/><br/>
+                            </group>
+                        </group>
+                        <field name="line_ids" nolabel="1" options="{'no_create': True, 'no_create_edit':True}">
+                            <tree editable="bottom" string="vista_tree_productos">
+                                <field name="selected" />
+                                <field name="purchase_orde_line_id" invisible="1"/>
+                                <field name="product_id" readonly="1"/>
+                                <field name="description" readonly="1"/>
+
+                            </tree>
+                        </field>
+                    </sheet>
+                    <footer>
+                        <button name="copy_lines" type="object" string="Duplicar Lineas" class="oe_highlight"/>
+                    </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action wz.purchase.order.duplicate.line -->
+    <record id="action_wz_purchase_order_duplicate_line" model="ir.actions.act_window">
+        <field name="name">Duplicar lineas</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">wz.purchase.order.duplicate.line</field>
+        <field name="view_mode">form</field>
+        <field name="binding_model_id" ref="purchase_order_custom_metalesa.model_purchase_order"/>
+        <field name="target">new</field>
+    </record>
+
+</odoo>
