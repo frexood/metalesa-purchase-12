@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <data>
         <record id="purchase.purchase_rfq" model="ir.actions.act_window">
             <field name="domain">[('state','not in',('purchase', 'done'))]</field>
         </record>
-    </data>
 </odoo>
