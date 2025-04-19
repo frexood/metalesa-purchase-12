@@ -22,8 +22,14 @@ class PurchaseOrder(models.Model):
     )
 
     date_planned_pc_lines = fields.Datetime(
-        string=_('Fecha planificada en todas las líneas'), 
+        string=_('Fecha planificada'), 
     )
+
+    where_to_store = fields.Selection([
+        ('inside', 'DENTRO'),
+        ('doesnot_matter', 'DA IGUAL'),
+        ('doesnot_apply', 'NO APLICA'),
+    ], string="Dónde almacenar", requered=True)
 
 
     def add_date_planned(self):
@@ -79,12 +85,56 @@ class PurchaseOrder(models.Model):
             rec.write({'date_planned': date_utc})
             #self.date_planned_pc_lines = ''
 
+    def add_DA_some_line(self):
+        ctx = {}
+        vals_po = {'purchase_order_id': self.id,}
+        po_where_store = self.env['wz.purchase.order.where.store'].create(vals_po)
 
+        po_ln_data = []
+        for order_ln in self.order_line:
+            po_ln_data.append((0, 0, {
+                'product_id': order_ln.product_id.id,
+                'order_line_purchase_id': order_ln.id,
+                'where_to_store': self.where_to_store,
+                'wz_po_where_store_id': po_where_store.id
+            }))
+
+        vals = {
+            'purchase_order_id': self.id,
+            'where_to_store': self.where_to_store,
+            'po_where_store_line_ids': po_ln_data,
+        }
+        po_where_store.write(vals)
+
+        get_lines = self.env['wz.purchase.order.where.store.line'].search([('wz_po_where_store_id','=',po_where_store.id)])
+
+        ctx['default_id'] = po_where_store.id
+        ctx['default_purchase_order_id'] = self.id
+        ctx['default_where_to_store'] = self.where_to_store
+        ctx['default_po_where_store_line_ids'] = get_lines.ids
+        
+        view_form_id = self.env.ref('purchase_order_custom_metalesa.view_wz_purchase_order_where_store_form').id
+
+        return {
+            'name': _('Asignar dónde almacenar'),
+            'res_model': 'wz.purchase.order.where.store',
+            'view_mode': 'form',
+            'views': [[view_form_id, 'form']],
+            'context': ctx,
+            'target': 'new',
+            'type': 'ir.actions.act_window',
+        }
+
+    def add_DA_allthe_lines(self):
+        for orden_ln in self.order_line:
+            orden_ln.write({'where_to_store': self.where_to_store})
 
     @api.multi
     def button_confirm(self):
         user = self.env.uid
         employee = self.env['hr.employee'].search([('user_id', '=', user)])
+        if not self.where_to_store:
+            raise ValidationError(_('Falta por rellenar el campo "Dónde almacenar"'))
         if not bool(employee):
             user_name = self.env['res.users'].browse(user).name
             error_msg = "No existe un empleado válido para el usuario '{}'.\n".format(user_name)

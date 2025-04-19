@@ -16,4 +16,15 @@
             </field>
         </record>
 
+        <record id="stock_move_custom_where_to_store_form_view" model="ir.ui.view">
+            <field name="name">stock.move.custom.where.to.store.form.view</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock_picking_custom_metalesa.stock_picking_recepciones_custom_form"/>
+            <field name="arch" type="xml">
+				<xpath expr="//field[@name='move_ids_without_package']//tree/field[@name='product_uom_new']" position="before">
+					<field name="where_to_store" readonly="1"/>
+				</xpath>
+            </field>
+        </record>
+
 </odoo>
