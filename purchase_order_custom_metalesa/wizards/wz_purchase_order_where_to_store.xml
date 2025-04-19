@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_wz_purchase_order_where_store_form" model="ir.ui.view">
+        <field name="name">view.wz.purchase.order.where.store.form</field>
+        <field name="model">wz.purchase.order.where.store</field>
+        <field name="arch" type="xml">
+             <form string="Asignar dónde almacenar">
+                    <group>                    
+                        <field name="where_to_store"  />
+                    </group>
+                    <field name="po_where_store_line_ids" widget="one2many" nolabel="1">
+                        <tree editable="top" delete="false" create="false">
+                            <field name="mark_line_where_store" />
+                            <field name="order_line_purchase_id" invisible="1"/>
+                            <field name="product_id" readonly="1" string="Producto"/>
+                            <field name="where_to_store" readonly="1"/>
+                        </tree>
+                    </field>
+                    <footer>
+                        <button name="assign_where_store_line" string="Asignar dónde almacenar" type="object"  class="oe_highlight"  />
+                        o
+                        <button string="Cancelar" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+        </field>
+    </record>
+</odoo>

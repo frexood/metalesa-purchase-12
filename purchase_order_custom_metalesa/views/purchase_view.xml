@@ -15,8 +15,16 @@
                     <div class="o_row">
                         <field name="date_planned_pc_lines" widget="date"  class="oe_edit_only"/>
                         <span>
-                            <button name="add_date_planned" type="object"  string="FP en alguna las línea" class="oe_link"/>
+                            <button name="add_date_planned" type="object"  string="FP en alguna línea" class="oe_link"/>
                             <button name="add_date_all_planned" type="object" string="FP en todas las líneas" class="oe_link"/>
+                        </span>
+                    </div>
+                    <label for="where_to_store" />
+                    <div class="o_row"> 
+                        <field name="where_to_store" class="oe_edit_only"/>
+                        <span>
+                            <button name="add_DA_some_line" type="object"  string="DA en alguna línea" class="oe_link"/>
+                            <button name="add_DA_allthe_lines" type="object" string="DA en todas las líneas" class="oe_link"/>
                         </span>
                     </div>
                 </field>
@@ -124,6 +132,20 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='date_order']" position="replace">
                     <field name="date_order" string="Fecha de validación" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+        
+        <record id="view_purchase_order_where_to_store_popup" model="ir.ui.view">
+            <field name="name">view.purchase.order.where_to.store.popup</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase_order_certifications.purchase_order_line_tree_form_certification"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook/page/field/form/sheet/group/group/field[@name='certification_needed']" position="replace">
+                    <field name="where_to_store"/>
+                </xpath>
+                <xpath expr="//field[@name='certification_needed']" position="replace">
+                    <field name="where_to_store"/>
                 </xpath>
             </field>
         </record>
