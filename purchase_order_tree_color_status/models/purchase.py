@@ -20,3 +20,8 @@ class PurchaseOrder(models.Model):
         string="Maxima Fecha Planificada",
         compute=_set_maximum_planned_date,
     )
+
+    porfolio = fields.Boolean(
+        string="Cartera",
+        help="Indica si la orden de compra es de CARTERA",
+    )
