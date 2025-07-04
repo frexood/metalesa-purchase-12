@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <record id="template_receive_material_email" model="mail.template">
+    <field name="name">RECEPCIÓN DE MATERIAL</field>
+    <field name="model_id" ref="purchase_automate_notifications.model_purchase_receive_notification"/>
+    <field name="subject">RECEPCIÓN DE MATERIAL - ${object.purchase_id.name} - ${object.analytic_account_parent_id.name}</field>
+    <field name="email_from">${(user.email or 'info@dominio.com')}</field>
+    <field name="auto_delete" eval="False"/>
+    <field name="body_html" type="html">
+        <html>
+        <body>
+            <p>Hola,</p>
+            <p>se ha registrado la siguiente recepción del material correspondiente al <strong>${object.purchase_id.name}</strong>.</p>
+            <div>${object.email_table_html | safe}</div>
+        </body>
+        </html>
+    </field>
+    </record>
+
+
+
+  </data>
+</odoo>

@@ -1,0 +1,37 @@
+<!-- views/purchase_notification_config_view.xml -->
+<odoo>
+  <record id="view_purchase_notification_config_form" model="ir.ui.view">
+    <field name="name">purchase.notification.config.form</field>
+    <field name="model">purchase.notification.config</field>
+    <field name="arch" type="xml">
+      <form string="Notificaciones de Compras">
+        <group>
+          <field name="user_ids"/>
+        </group>
+      </form>
+    </field>
+  </record>
+
+  <record id="model_purchase_notification_config_tree" model="ir.ui.view">
+    <field name="name">purchase.notification.config.view.tree</field>
+    <field name="model">purchase.notification.config</field>
+    <field name="arch" type="xml">
+        <tree string="Notificaciones de Compras">
+                      <field name="user_ids" widget="many2many_tags"/>
+
+        </tree>
+    </field>
+  </record>
+
+  <record id="action_purchase_notification_config" model="ir.actions.act_window">
+    <field name="name">Configuración de Notificaciones</field>
+    <field name="res_model">purchase.notification.config</field>
+    <field name="view_mode">tree,form</field>
+    <field name="target">current</field>
+  </record>
+
+  <menuitem id="menu_purchase_notification_config" 
+            name="Usuarios a notificar recepcion de materiales"
+            parent="purchase.menu_purchase_config"
+            action="action_purchase_notification_config"/>
+</odoo>
