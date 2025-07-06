@@ -149,18 +149,17 @@ class PurchaseReceiveNotification(models.Model):
 
         config = self.env['purchase.notification.config'].search([], limit=1)
         if not config or not config.user_ids:
-            raise UserError("No se han definido usuarios en la configuración de notificaciones.")
+            _logger.info("No se envía correo porque no hay configuración o usuarios definidos.")
+            return  # Importante: NO usar continue aquí, no estamos en un bucle en este punto
 
         for rec in self:
             if not rec.picking_id:
                 continue
 
-            # Condición: excluir si el pedido tiene 'porfolio'
             if rec.purchase_id and rec.purchase_id.porfolio:
                 _logger.info("No se envía correo porque la orden está marcada como porfolio: %s", rec.purchase_id.name)
                 continue
 
-            # Condición: excluir si contiene transporte en el nombre del producto
             has_transport = any(
                 'transporte' in (move.product_id.display_name or '').lower()
                 for move in rec.picking_id.move_lines
@@ -170,16 +169,17 @@ class PurchaseReceiveNotification(models.Model):
                 _logger.info("No se envía correo porque contiene producto transporte: %s", rec.picking_id.name)
                 continue
 
-            # Para: usuarios definidos en config
             email_to = ','.join(
-                user.partner_id.email for user in config.user_ids if user.partner_id and user.partner_id.email
+                user.partner_id.email
+                for user in config.user_ids
+                if user.partner_id and user.partner_id.email
             )
 
-            # CC: Gestor del proyecto
             email_cc = rec.analytic_user_id.partner_id.email if rec.analytic_user_id and rec.analytic_user_id.partner_id else None
 
             if not email_to:
-                raise UserError("No hay destinatarios definidos para el correo.")
+                _logger.warning("No hay destinatarios definidos en la configuración.")
+                continue
 
             _logger.info("Enviando correo de notificación a: %s | CC: %s", email_to, email_cc or "-")
 

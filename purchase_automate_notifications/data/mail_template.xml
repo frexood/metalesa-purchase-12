@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
   <data>
-
     <record id="template_receive_material_email" model="mail.template">
     <field name="name">RECEPCIÓN DE MATERIAL</field>
     <field name="model_id" ref="purchase_automate_notifications.model_purchase_receive_notification"/>
@@ -12,15 +11,12 @@
         <html>
         <body>
             <p>Hola,</p>
-            <p>Se ha registrado la siguiente recepción en el albarán <strong><a href="${object.picking_url}">${object.picking_id.name}</a></strong> correspondiente al <strong><a href="${object.purchase_url}">${object.purchase_id.name}</a></strong>. La recepción la acaba de registrar  <strong>${object.picking_id.employee_id.name}</strong> 
+            <p>Se ha registrado la siguiente recepción en el albarán <strong><a href="${object.picking_url}" target="_blank" >${object.picking_id.name}</a></strong> correspondiente al <strong><a href="${object.purchase_url}" target="_blank" >${object.purchase_id.name}</a></strong>. La recepción la acaba de registrar  <strong>${object.picking_id.employee_id.name}</strong> 
             </p>
             <div>${object.email_table_html | safe}</div>
         </body>
         </html>
     </field>
     </record>
-
-
-
   </data>
 </odoo>
