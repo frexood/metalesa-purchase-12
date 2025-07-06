@@ -26,8 +26,21 @@ class PurchaseReceiveNotification(models.Model):
 
 
     project_name = fields.Char(string='Nombre del Proyecto')
-
     email_table_html = fields.Text(string="Tabla HTML", compute='_compute_email_table', store=False)
+
+    purchase_url = fields.Char(string='URL Orden de Compra', compute='_compute_urls', store=True)
+    picking_url = fields.Char(string='URL Albarán', compute='_compute_urls', store=True)
+
+    @api.depends('purchase_id', 'picking_id')
+    def _compute_urls(self):
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        for rec in self:
+            rec.purchase_url = ''
+            rec.picking_url = ''
+            if rec.purchase_id:
+                rec.purchase_url = f'{base_url}/web#id={rec.purchase_id.id}&model=purchase.order&view_type=form'
+            if rec.picking_id:
+                rec.picking_url = f'{base_url}/web#id={rec.picking_id.id}&model=stock.picking&view_type=form'
 
     @api.model
     def create(self, vals):
@@ -172,7 +185,8 @@ class PurchaseReceiveNotification(models.Model):
 
             template.send_mail(rec.id, force_send=True, email_values={
                 'email_to': email_to,
-                'email_cc': email_cc
+                'email_cc': email_cc,
+                'email_from': 'recepciones@metalesa.com',
             })
 
             rec.state = 'sent'
