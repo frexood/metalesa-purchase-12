@@ -6,7 +6,16 @@
     <field name="arch" type="xml">
       <form string="Notificaciones de Compras">
         <group>
-          <field name="user_ids"/>
+          <field name="user_ids" invisible="0" />
+
+          <field name="employee_ids" >
+                <tree create="true" delete="true" editable="top">
+                  <field name="name" />
+                  <field name="work_email" string="Email del trabajo"/>
+                  <field name="company_id" />
+                  <field name="department_id" />
+              </tree>
+          </field>
         </group>
       </form>
     </field>
@@ -17,7 +26,9 @@
     <field name="model">purchase.notification.config</field>
     <field name="arch" type="xml">
         <tree string="Notificaciones de Compras">
-                      <field name="user_ids" widget="many2many_tags"/>
+                      <field name="employee_ids" widget="many2many_tags"/>
+
+                      
 
         </tree>
     </field>
