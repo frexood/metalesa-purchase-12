@@ -148,40 +148,41 @@ class PurchaseReceiveNotification(models.Model):
             raise UserError("La plantilla de correo no está definida correctamente.")
 
         config = self.env['purchase.notification.config'].search([], limit=1)
-        if not config or not config.user_ids:
-            _logger.info("No se envía correo porque no hay configuración o usuarios definidos.")
-            return  # Importante: NO usar continue aquí, no estamos en un bucle en este punto
 
         for rec in self:
             if not rec.picking_id:
                 continue
 
+            # Excluir porfolio
             if rec.purchase_id and rec.purchase_id.porfolio:
-                _logger.info("No se envía correo porque la orden está marcada como porfolio: %s", rec.purchase_id.name)
+                _logger.info("No se envía correo: la orden está marcada como porfolio: %s", rec.purchase_id.name)
                 continue
 
+            # Excluir productos tipo transporte
             has_transport = any(
                 'transporte' in (move.product_id.display_name or '').lower()
-                for move in rec.picking_id.move_lines
-                if move.product_id
+                for move in rec.picking_id.move_lines if move.product_id
             )
             if has_transport:
-                _logger.info("No se envía correo porque contiene producto transporte: %s", rec.picking_id.name)
+                _logger.info("No se envía correo: contiene producto transporte: %s", rec.picking_id.name)
                 continue
 
-            email_to = ','.join(
-                user.partner_id.email
-                for user in config.user_ids
-                if user.partner_id and user.partner_id.email
-            )
-
-            email_cc = rec.analytic_user_id.partner_id.email if rec.analytic_user_id and rec.analytic_user_id.partner_id else None
+            # Obtener destinatario principal: Gestor del Proyecto
+            user = rec.analytic_user_id
+            email_to = user.employee_ids and user.employee_ids[0].work_email or False
 
             if not email_to:
-                _logger.warning("No hay destinatarios definidos en la configuración.")
+                _logger.warning("Gestor del Proyecto no tiene correo configurado. Se omite el envío.")
                 continue
 
-            _logger.info("Enviando correo de notificación a: %s | CC: %s", email_to, email_cc or "-")
+            # Obtener copia: todos los empleados definidos en config (si existe)
+            email_cc = ''
+            if config and config.employee_ids:
+                email_cc = ','.join(
+                    emp.work_email for emp in config.employee_ids if emp.work_email
+                )
+
+            _logger.info("Enviando correo a: %s | CC: %s", email_to, email_cc)
 
             template.send_mail(rec.id, force_send=True, email_values={
                 'email_to': email_to,
