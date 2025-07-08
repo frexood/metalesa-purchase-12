@@ -153,40 +153,37 @@ class PurchaseReceiveNotification(models.Model):
             if not rec.picking_id:
                 continue
 
-            # Excluir porfolio
             if rec.purchase_id and rec.purchase_id.porfolio:
-                _logger.info("No se envía correo: la orden está marcada como porfolio: %s", rec.purchase_id.name)
+                _logger.info("No se envía correo porque la orden está marcada como porfolio: %s", rec.purchase_id.name)
                 continue
 
-            # Excluir productos tipo transporte
             has_transport = any(
                 'transporte' in (move.product_id.display_name or '').lower()
-                for move in rec.picking_id.move_lines if move.product_id
+                for move in rec.picking_id.move_lines
+                if move.product_id
             )
             if has_transport:
-                _logger.info("No se envía correo: contiene producto transporte: %s", rec.picking_id.name)
+                _logger.info("No se envía correo porque contiene producto transporte: %s", rec.picking_id.name)
                 continue
 
-            # Obtener destinatario principal: Gestor del Proyecto
-            user = rec.analytic_user_id
-            email_to = user.employee_ids and user.employee_ids[0].work_email or False
+            # Buscar email_to desde el empleado (work_email)
+            employee = self.env['hr.employee'].search([('user_id', '=', rec.analytic_user_id.id)], limit=1)
+            email_to = employee.work_email if employee and employee.work_email else None
+
+            # CC desde configuración (employee_ids)
+            config = self.env['purchase.notification.config'].search([], limit=1)
+            email_cc = ','.join(
+                emp.work_email for emp in config.employee_ids if emp.work_email
+            ) if config else None
 
             if not email_to:
-                _logger.warning("Gestor del Proyecto no tiene correo configurado. Se omite el envío.")
-                continue
+                _logger.warning("Gestor del Proyecto no tiene correo configurado. Se continúa solo con CC.")
 
-            # Obtener copia: todos los empleados definidos en config (si existe)
-            email_cc = ''
-            if config and config.employee_ids:
-                email_cc = ','.join(
-                    emp.work_email for emp in config.employee_ids if emp.work_email
-                )
-
-            _logger.info("Enviando correo a: %s | CC: %s", email_to, email_cc)
+            _logger.info("Enviando correo a: %s | CC: %s", email_to or "-", email_cc or "-")
 
             template.send_mail(rec.id, force_send=True, email_values={
-                'email_to': email_to,
-                'email_cc': email_cc,
+                'email_to': email_to or email_cc,  # Si no hay email_to, se usa email_cc
+                'email_cc': email_cc if email_to else False,
                 'email_from': 'recepciones@metalesa.com',
             })
 
