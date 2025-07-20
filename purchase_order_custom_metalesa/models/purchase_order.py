@@ -135,6 +135,10 @@ class PurchaseOrder(models.Model):
         employee = self.env['hr.employee'].search([('user_id', '=', user)])
         if not self.where_to_store:
             raise ValidationError(_('Falta por rellenar el campo "Dónde almacenar"'))
+        for line in self.order_line:
+            if not line.where_to_store:
+                raise ValidationError(_('Falta por rellenar el campo "Dónde almacenar" en la línea: %s') % 
+                    (line.name or line.product_id.display_name))
         if not bool(employee):
             user_name = self.env['res.users'].browse(user).name
             error_msg = "No existe un empleado válido para el usuario '{}'.\n".format(user_name)
@@ -179,3 +183,4 @@ class PurchaseOrder(models.Model):
             default = {}
         default['user_id'] = self.env.user.id
         return super(PurchaseOrder, self).copy(default)
+    
