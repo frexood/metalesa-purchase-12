@@ -13,6 +13,7 @@ class PurchaseReceiveNotification(models.Model):
     _inherit = ['mail.thread']
 
     picking_id = fields.Many2one('stock.picking', string='Recepción', required=True, ondelete='cascade', tracking=True)
+
     purchase_id = fields.Many2one('purchase.order', string='Orden de Compra')
     state = fields.Selection([
         ('draft', 'Borrador'),
@@ -99,6 +100,8 @@ class PurchaseReceiveNotification(models.Model):
     def _compute_email_table(self):
         for rec in self:
             rows = ""
+            incident_messages = []
+
             for move in rec.picking_id.move_lines:
                 if move.purchase_line_id:
                     qty_pedida = move.purchase_line_id.product_qty
@@ -119,9 +122,31 @@ class PurchaseReceiveNotification(models.Model):
                         qty_recibida,
                         qty_total
                     )
+
+                # Revisión de campos de calidad por cada move_line
+                for move_line in move.move_line_ids:
+                    fields_bad = []
+                    if move_line.quantity_quality == 'bad':
+                        fields_bad.append('CANTIDAD')
+                    if move_line.quality == 'bad':
+                        fields_bad.append('CALIDAD')
+                    if move_line.dimension == 'bad':
+                        fields_bad.append('DIMENSIONES')
+
+                    if fields_bad:
+                        incident_text = '''
+                            EN EL %s, INCIDENCIA EN %s, LA INCIDENCIA ES:  %s.
+                        ''' % (
+                            move.product_id.display_name,
+                            '/'.join(fields_bad),
+                            move_line.incidence or 'Sin descripción.'
+                        )
+                        incident_messages.append(incident_text.strip())
+
             if not rows:
                 rows = '<tr><td colspan="4">No se encontraron productos recibidos.</td></tr>'
-            rec.email_table_html = '''
+
+            table_html = '''
                 <table border="1" cellspacing="0" cellpadding="5" style="border-collapse: collapse; width: 100%%;">
                     <thead style="background-color: #f0f0f0;">
                         <tr>
@@ -137,6 +162,20 @@ class PurchaseReceiveNotification(models.Model):
                 </table>
             ''' % rows
 
+            # Bloque de incidencias si las hay
+            if incident_messages:
+                incident_block = '''
+                    <div style="color: red; font-weight: bold; margin-top: 20px;">
+                        DURANTE LA INSPECCIÓN DEL MATERIAL RECIBIDO SE HAN ENCONTRADO LAS SIGUIENTES INCIDENCIAS:
+                        <ul style="color: red; font-weight: normal;">
+                            %s
+                        </ul>
+                    </div>
+                ''' % ''.join(f'<li>{msg}</li>' for msg in incident_messages)
+
+                table_html += incident_block
+
+            rec.email_table_html = table_html
 
 
     def send_notification_email(self):
@@ -147,7 +186,7 @@ class PurchaseReceiveNotification(models.Model):
         if not template:
             raise UserError("La plantilla de correo no está definida correctamente.")
 
-        config = self.env['purchase.notification.config'].search([], limit=1)
+        config = self.env['purchase.notification.config'].sudo().search([], limit=1)
 
         for rec in self:
             if not rec.picking_id:
@@ -167,23 +206,39 @@ class PurchaseReceiveNotification(models.Model):
                 continue
 
             # Buscar email_to desde el empleado (work_email)
-            employee = self.env['hr.employee'].search([('user_id', '=', rec.analytic_user_id.id)], limit=1)
+            employee = self.env['hr.employee'].sudo().search([('user_id', '=', rec.analytic_user_id.id)], limit=1)
             email_to = employee.work_email if employee and employee.work_email else None
 
-            # CC desde configuración (employee_ids)
-            config = self.env['purchase.notification.config'].search([], limit=1)
-            email_cc = ','.join(
-                emp.work_email for emp in config.employee_ids if emp.work_email
-            ) if config else None
+            # --- CC normal desde configuración ---
+            config = self.env['purchase.notification.config'].sudo().search([], limit=1)
+            email_cc_list = [emp.work_email for emp in config.employee_ids if emp.work_email]
+
+            # --- Validar si hay alguna línea con valores 'bad' ---
+            found_bad = False
+            for move in rec.picking_id.move_lines:
+                for line in move.move_line_ids:
+                    if line.dimension == 'bad' or line.quantity_quality == 'bad' or line.quality == 'bad':
+                        found_bad = True
+                        break
+                if found_bad:
+                    break
+
+            # Si hay incidencia, añadir a empleados responsables de incidencias
+            if found_bad and config:
+                bad_emails = [emp.work_email for emp in config.employee_bad_inspection_ids if emp.work_email]
+                email_cc_list.extend(bad_emails)
+
+            # Eliminar duplicados y vacíos
+            email_cc_list = list(filter(None, set(email_cc_list)))
 
             if not email_to:
                 _logger.warning("Gestor del Proyecto no tiene correo configurado. Se continúa solo con CC.")
 
-            _logger.info("Enviando correo a: %s | CC: %s", email_to or "-", email_cc or "-")
+            _logger.info("Enviando correo a: %s | CC: %s", email_to or "-", ', '.join(email_cc_list) or "-")
 
             template.send_mail(rec.id, force_send=True, email_values={
-                'email_to': email_to or email_cc,  # Si no hay email_to, se usa email_cc
-                'email_cc': email_cc if email_to else False,
+                'email_to': email_to or ','.join(email_cc_list),  # Si no hay email_to, se usa CC como TO
+                'email_cc': ','.join(email_cc_list) if email_to else False,
                 'email_from': 'recepciones@metalesa.com',
             })
 

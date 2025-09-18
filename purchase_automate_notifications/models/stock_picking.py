@@ -15,6 +15,7 @@ class StockPicking(models.Model):
     def action_done(self):
         res = super(StockPicking, self).action_done()
         for picking in self.filtered(lambda p: p.picking_type_id.code == 'incoming'):
+            print("----------------------->aqui va<-----------------------------")
             self.env['purchase.receive.notification'].create({'picking_id': picking.id})
 
 
