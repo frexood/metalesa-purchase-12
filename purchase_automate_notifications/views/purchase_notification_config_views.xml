@@ -5,34 +5,37 @@
     <field name="model">purchase.notification.config</field>
     <field name="arch" type="xml">
       <form string="Notificaciones de Compras">
+        <group>
+              <field name="name" invisible="0" />
+              <field name="user_ids" invisible="1" />
+              <field name="type_picking_ids" widget="many2many_tags" />
+      </group>
+      
         <group col="1">
-          <field name="name" invisible="0" />
-          <field name="user_ids" invisible="1" />
+            <group name="group_1" string="Usuarios a notificar" col="12">
+              <field name="employee_ids" nolabel="1" >
+                  <tree create="true" delete="true" editable="top">
+                    <field name="name" />
+                    <field name="work_email" string="Email del trabajo"/>
+                    <field name="company_id" />
+                    <field name="department_id" />
+                </tree>
+            </field>
+            </group>
+            
 
-
-          <group name="group_1" string="Usuarios a notificar" col="12">
-            <field name="employee_ids" nolabel="1" >
-                <tree create="true" delete="true" editable="top">
-                  <field name="name" />
-                  <field name="work_email" string="Email del trabajo"/>
-                  <field name="company_id" />
-                  <field name="department_id" />
-              </tree>
-          </field>
+            <group name="group_2" string="Usuarios a notificar Incidencias" col="12">
+                <field name="employee_bad_inspection_ids" nolabel="1" >
+                    <tree create="true" delete="true" editable="top">
+                      <field name="name" />
+                      <field name="work_email" string="Email del trabajo"/>
+                      <field name="company_id" />
+                      <field name="department_id" />
+                  </tree>
+              </field>
+            </group>
           </group>
-          
 
-          <group name="group_2" string="Usuarios a notificar Incidencias" col="12">
-            <field name="employee_bad_inspection_ids" nolabel="1" >
-                <tree create="true" delete="true" editable="top">
-                  <field name="name" />
-                  <field name="work_email" string="Email del trabajo"/>
-                  <field name="company_id" />
-                  <field name="department_id" />
-              </tree>
-          </field>
-          </group>
-        </group>
       </form>
     </field>
   </record>
