@@ -27,3 +27,11 @@ class PurchaseNotificationConfig(models.Model):
         'your_model_id', 'employee_id',
         string="Usuarios Novedad en inspecciones"
     )
+
+    type_picking_ids = fields.Many2many(
+        'stock.picking.type',
+        'purchase_config_picking_rel',   # nombre de tabla M2M
+        'config_id',
+        'picking_type_id',
+        string='Tipos de operaciones permitidas'
+    )
