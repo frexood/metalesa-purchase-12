@@ -53,45 +53,53 @@ class PurchaseReceiveNotification(models.Model):
 
     def _set_analytic_fields(self):
         for rec in self:
-            picking = rec.picking_id
+            purchase = rec.purchase_id or (rec.picking_id.purchase_id if rec.picking_id else False)
+
             analytic_account = None
             parent_account = None
-            purchase = picking.purchase_id if picking else False
-
             project_id = False
             project_name = ''
             delineante = False
 
-            if picking:
-                for move in picking.move_lines:
-                    if move.analytic_account_id:
-                        analytic_account = move.analytic_account_id
-                        parent_account = analytic_account.parent_id
+            # ---------- Solo desde líneas de la OC ----------
+            if purchase:
+                # Buscar la primera línea que tenga cuenta analítica
+                po_line = next((l for l in purchase.order_line if l.account_analytic_id), None)
+                if po_line and po_line.account_analytic_id:
+                    analytic_account = po_line.account_analytic_id
+                    parent_account = analytic_account.parent_id
 
-                        # Extraer nombre del proyecto desde el nombre de la cuenta analítica
-                        full_name = analytic_account.name
-                        if full_name and '/' in full_name:
-                            project_name = full_name.split('/')[0].strip()
-                        else:
-                            project_name = full_name.strip()
+            # ---------- Nombre del proyecto ----------
+            if analytic_account:
+                full_name = analytic_account.name or ''
+                if '/' in full_name:
+                    project_name = full_name.split('/')[0].strip()
+                else:
+                    project_name = full_name.strip()
 
-                        if parent_account:
-                        # Buscar en el modelo project.project por nombre exacto
-                            project = self.env['project.project'].search([
-                                ('name', '=', parent_account.name)
-                            ], limit=1)
+            # ---------- Localizar el project.project ----------
+            project = False
+            if parent_account:
+                project = self.env['project.project'].search([
+                    ('analytic_account_id', '=', parent_account.id)
+                ], limit=1)
 
-                            if project:
-                                project_id = project.id
-                                delineante = project.delineante.id if project.delineante else False
-                        break
+            if not project and analytic_account:
+                project = self.env['project.project'].search([
+                    ('analytic_account_id', '=', analytic_account.id)
+                ], limit=1)
 
+            if project:
+                project_id = project.id
+                delineante = project.delineante.id if getattr(project, 'delineante', False) else False
+
+            # ---------- Escribir campos ----------
             rec.write({
                 'analytic_account_id': analytic_account.id if analytic_account else False,
                 'analytic_account_parent_id': parent_account.id if parent_account else False,
                 'project_name': project_name,
-                'project_id': project_id,
-                'analytic_user_id': delineante,
+                'project_id': project_id or False,
+                'analytic_user_id': delineante or False,
                 'purchase_id': purchase.id if purchase else False,
             })
 
