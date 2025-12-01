@@ -50,6 +50,8 @@ class PurchaseOrderExtends(models.Model):
         default = dict(default or {})
         default['notes'] = False
 
+        default['plantilla_ca_id'] = False
+
         # Copiar las líneas manualmente con modificación del campo account_analytic_id
         new_order_lines = []
         for line in self.order_line:
