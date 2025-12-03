@@ -47,28 +47,26 @@ class PurchaseOrderExtends(models.Model):
             Personalización del duplicado (copy):
             1. 'notes' se limpia siempre.
             2. 'plantilla_ca_id' se limpia SOLO si el pedido NO tiene transporte.
-            3. 'account_analytic_id' (en líneas) se limpia SOLO si la línea NO es transporte.
+            3. En las líneas:
+            - Si ES transporte: Se pone 'where_to_store' en 'doesnot_apply'.
+            - Si NO es transporte: Se limpia 'account_analytic_id'.
             """
             default = dict(default or {})
             default['notes'] = False
 
-            # --- PASO 1: Detectar si el pedido es "de transporte" ---
-            # Recorremos las líneas actuales para ver si alguna es de transporte.
+            # --- PASO 1: Detectar si el pedido es "de transporte" (para la cabecera) ---
             es_pedido_transporte = False
             for line in self.order_line:
                 if line.product_id and line.product_id.name:
                     if 'TRANSPORTE' in line.product_id.name.upper():
                         es_pedido_transporte = True
-                        break  # Con encontrar uno ya nos basta para marcar el pedido
+                        break
             
-            # --- PASO 2: Aplicar regla a la cabecera (plantilla_ca_id) ---
-            # Si NO es transporte, lo borramos (False).
-            # Si ES transporte, no hacemos nada (se copia el valor original).
+            # --- PASO 2: Aplicar regla a la cabecera ---
             if not es_pedido_transporte:
                 default['plantilla_ca_id'] = False
 
-
-            # --- PASO 3: Copiar líneas con sus reglas individuales ---
+            # --- PASO 3: Copiar líneas con las nuevas reglas ---
             new_order_lines = []
             for line in self.order_line:
                 line_vals = line.copy_data()[0]
@@ -79,18 +77,21 @@ class PurchaseOrderExtends(models.Model):
                     if 'TRANSPORTE' in line.product_id.name.upper():
                         es_linea_transporte = True
                 
-                # Si NO es línea de transporte, limpiamos la cuenta analítica
-                if not es_linea_transporte:
+                # --- AQUI ESTA EL CAMBIO ---
+                if es_linea_transporte:
+                    # Si es transporte, asignamos el valor fijo al campo where_to_store
+                    line_vals['where_to_store'] = 'doesnot_apply'
+                else:
+                    # Si NO es transporte, limpiamos la cuenta analítica
                     line_vals['account_analytic_id'] = False
                 
                 new_order_lines.append((0, 0, line_vals))
 
             default['order_line'] = new_order_lines
 
-            _logger.info("======= DEBUG: copy() ejecutado. Es transporte: %s =======", es_pedido_transporte)
+            _logger.info("======= DEBUG: copy() ejecutado con reglas de transporte =======")
 
             return super(PurchaseOrderExtends, self).copy(default)
-            
     def _get_default_terms(self):
         """
         Obtiene los términos y condiciones predeterminados y los devuelve.
