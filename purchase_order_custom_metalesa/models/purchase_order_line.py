@@ -10,7 +10,7 @@ class PurchaseOrderLine(models.Model):
         ('inside', 'DENTRO'),
         ('doesnot_matter', 'DA IGUAL'),
         ('doesnot_apply', 'NO APLICA'),
-    ], string="Dónde almacenar", required=True)
+    ], string="Dónde almacenar", required=False)
 
 
     @api.onchange('product_id')
