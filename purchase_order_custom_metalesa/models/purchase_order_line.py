@@ -10,4 +10,21 @@ class PurchaseOrderLine(models.Model):
         ('inside', 'DENTRO'),
         ('doesnot_matter', 'DA IGUAL'),
         ('doesnot_apply', 'NO APLICA'),
-    ], string="Dónde almacenar", requered=True)
+    ], string="Dónde almacenar", required=True)
+
+
+    @api.onchange('product_id')
+    def _onchange_product_id_check_transport(self):
+        """
+        Detecta cambios en el campo product_id.
+        Si el nombre del producto contiene 'TRANSPORTE', asigna 'doesnot_apply'.
+        """
+        if self.product_id and self.product_id.name:
+            # Usamos .upper() para que funcione con 'Transporte', 'transporte' o 'TRANSPORTE'
+            if 'TRANSPORTE' in self.product_id.name.upper():
+                self.where_to_store = 'doesnot_apply'
+            else:
+                # Opcional: Si quieres reiniciar el valor si cambian a un producto que NO es transporte
+                # Si no quieres que se reinicie, borra las siguientes lineas:
+                if self.where_to_store == 'doesnot_apply':
+                     self.where_to_store = False
