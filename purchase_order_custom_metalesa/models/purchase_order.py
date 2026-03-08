@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo import models, fields, api, exceptions, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, AccessError
 
 from pytz import timezone
 
@@ -31,6 +31,37 @@ class PurchaseOrder(models.Model):
         ('doesnot_apply', 'NO APLICA'),
     ], string="Dónde almacenar", requered=True)
 
+    @api.multi
+    def _add_supplier_to_product(self):
+        """Override para actualizar precios de supplierinfo existentes
+        antes de llamar al super() que solo crea nuevos registros."""
+        for line in self.order_line:
+            # Determinar el partner (parent si es contacto)
+            partner = self.partner_id if not self.partner_id.parent_id else self.partner_id.parent_id
+            # Buscar supplierinfo existente para este partner y producto
+            supplierinfo = self.env['product.supplierinfo'].search([
+                ('name', '=', partner.id),
+                ('product_tmpl_id', '=', line.product_id.product_tmpl_id.id),
+                ('min_qty', '=', 0.0),
+            ], limit=1, order='id desc')
+            if supplierinfo:
+                # Convertir el precio a la moneda del proveedor
+                currency = partner.property_purchase_currency_id or self.env.user.company_id.currency_id
+                price = self.currency_id._convert(
+                    line.price_unit, currency, line.company_id,
+                    line.date_order or fields.Date.today(), round=False)
+                # Convertir el precio a la UdM de compra del producto si es diferente
+                if line.product_id.product_tmpl_id.uom_po_id != line.product_uom:
+                    default_uom = line.product_id.product_tmpl_id.uom_po_id
+                    price = line.product_uom._compute_price(price, default_uom)
+                try:
+                    supplierinfo.write({
+                        'price': price,
+                        'currency_id': currency.id,
+                    })
+                except AccessError:
+                    break
+        return super(PurchaseOrder, self)._add_supplier_to_product()
 
     def add_date_planned(self):
         ctx = {}
