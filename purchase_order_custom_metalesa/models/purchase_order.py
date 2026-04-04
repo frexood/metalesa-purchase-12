@@ -33,27 +33,46 @@ class PurchaseOrder(models.Model):
 
     @api.multi
     def _add_supplier_to_product(self):
-        """Override para actualizar precios de supplierinfo existentes
-        antes de llamar al super() que solo crea nuevos registros."""
+        """
+        Override para actualizar precios de supplierinfo existentes
+        antes de llamar al super() que solo crea nuevos registros.
+        Permite elegir si se usa el último precio global (last_purchase_price)
+        o por proveedor según el parámetro del sistema 'purchase.last_price_mode'.
+        """
+        # Parámetro: 'any' = último precio de cualquier proveedor (last_purchase_price), 'partner' = solo del proveedor actual
+        last_price_mode = self.env['ir.config_parameter'].sudo().get_param('purchase.last_price_mode', 'partner')
         for line in self.order_line:
-            # Determinar el partner (parent si es contacto)
             partner = self.partner_id if not self.partner_id.parent_id else self.partner_id.parent_id
-            # Buscar supplierinfo existente para este partner y producto
-            supplierinfo = self.env['product.supplierinfo'].search([
-                ('name', '=', partner.id),
-                ('product_tmpl_id', '=', line.product_id.product_tmpl_id.id),
-                ('min_qty', '=', 0.0),
-            ], limit=1, order='id desc')
-            if supplierinfo:
-                # Convertir el precio a la moneda del proveedor
-                currency = partner.property_purchase_currency_id or self.env.user.company_id.currency_id
-                price = self.currency_id._convert(
-                    line.price_unit, currency, line.company_id,
-                    line.date_order or fields.Date.today(), round=False)
+            supplierinfo = False
+            if last_price_mode == 'any':
+                # Usar el último precio de compra real del producto
+                price = line.product_id.last_purchase_price
+                currency = self.env.user.company_id.currency_id
                 # Convertir el precio a la UdM de compra del producto si es diferente
                 if line.product_id.product_tmpl_id.uom_po_id != line.product_uom:
                     default_uom = line.product_id.product_tmpl_id.uom_po_id
                     price = line.product_uom._compute_price(price, default_uom)
+                # Buscar cualquier supplierinfo para el producto
+                supplierinfo = self.env['product.supplierinfo'].search([
+                    ('product_tmpl_id', '=', line.product_id.product_tmpl_id.id),
+                    ('min_qty', '=', 0.0),
+                ], limit=1, order='id desc')
+            else:
+                # Buscar supplierinfo existente para este partner y producto
+                supplierinfo = self.env['product.supplierinfo'].search([
+                    ('name', '=', partner.id),
+                    ('product_tmpl_id', '=', line.product_id.product_tmpl_id.id),
+                    ('min_qty', '=', 0.0),
+                ], limit=1, order='id desc')
+                if supplierinfo:
+                    currency = partner.property_purchase_currency_id or self.env.user.company_id.currency_id
+                    price = self.currency_id._convert(
+                        line.price_unit, currency, line.company_id,
+                        line.date_order or fields.Date.today(), round=False)
+                    if line.product_id.product_tmpl_id.uom_po_id != line.product_uom:
+                        default_uom = line.product_id.product_tmpl_id.uom_po_id
+                        price = line.product_uom._compute_price(price, default_uom)
+            if supplierinfo:
                 try:
                     supplierinfo.write({
                         'price': price,
