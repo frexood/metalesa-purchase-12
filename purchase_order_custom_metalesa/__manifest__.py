@@ -26,6 +26,7 @@
         "wizards/wz_purchase_order_date_planned.xml",
         "wizards/wz_purchase_order_duplicate_line.xml",
         "wizards/wz_purchase_order_where_to_store.xml",
+        'data/purchase_last_price_mode_param.xml',
     ],
     'auto_install': True,
 }
