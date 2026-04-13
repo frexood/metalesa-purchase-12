@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-# -*- encoding: utf-8 -*-
 
+from asyncio.log import logger
+
 from odoo import models, fields, api, _
 from odoo.addons import decimal_precision as dp
 
@@ -78,6 +80,15 @@ class PurchaseOrderLine(models.Model):
         else:
             self.product_uom = False
             self.product_uop = False
+
+        # Buscar el último precio de compra del producto
+        last_purchase = self.env['product.purchase.history'].search([
+            ('product_id', '=', self.product_id.id)
+        ], order='date_order desc', limit=1)
+        if last_purchase:
+            self.price_unit = last_purchase.price_unit
+            logger.info(f"[ONCHANGE] Asignado precio_unit={last_purchase.price_unit} para product_id={self.product_id.id}")
+
         return res
 
 #
