@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-   <data noupdate="1">
-       <record id="param_purchase_last_price_mode" model="ir.config_parameter">
-           <field name="key">purchase.last_price_mode</field>
-           <field name="value">any</field>
-       </record>
-   </data>
-</odoo>
