@@ -23,10 +23,10 @@
         'views/menu_views.xml',
         'views/purchase_view.xml',
         'views/stock_move_view.xml',
+        'views/product_purchase_history_view.xml',
         "wizards/wz_purchase_order_date_planned.xml",
         "wizards/wz_purchase_order_duplicate_line.xml",
         "wizards/wz_purchase_order_where_to_store.xml",
-        'data/purchase_last_price_mode_param.xml',
     ],
     'auto_install': True,
 }
