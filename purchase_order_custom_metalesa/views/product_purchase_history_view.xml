@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        
+        <!-- Vista form para el modelo product.purchase.history -->
+        <record id="product_purchase_history_form_view" model="ir.ui.view">
+            <field name="name">product.purchase.history.form</field>
+            <field name="model">product.purchase.history</field>
+            <field name="arch" type="xml">
+                <form string="Historial de Compra">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="partner_name" readonly="1"/>
+                                <field name="purchase_order_name" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="date_order" readonly="1"/>
+                                <field name="price_unit" readonly="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vista tree para el modelo product.purchase.history -->
+        <record id="product_purchase_history_tree_view" model="ir.ui.view">
+            <field name="name">product.purchase.history.tree</field>
+            <field name="model">product.purchase.history</field>
+            <field name="arch" type="xml">
+                <tree string="Historial de Compras" create="false" edit="false" delete="false">
+                    <field name="partner_name" string="Proveedor"/>
+                    <field name="purchase_order_name" string="N° Orden"/>
+                    <field name="date_order" string="Fecha" widget="date"/>
+                    <field name="product_qty" string="Cantidad"/>
+                    <field name="product_uom" string="Unidad de Medida"/>
+                    <field name="price_unit" string="Precio Unitario"/>
+                    <field name="currency_id" string="Moneda"/>
+                    <field name="state" string="Estado"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Acción para ver el historial de compras -->
+        <record id="product_purchase_history_action" model="ir.actions.act_window">
+            <field name="name">Historial de Compras</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.purchase.history</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('product_purchase_history_tree_view')}), (0, 0, {'view_mode': 'form', 'view_id': ref('product_purchase_history_form_view')})]"/>
+        </record>
+
+        <!-- Heredar la vista de formulario de variantes de producto para agregar el historial de compras -->
+        <!-- Esta vista se mostrará en el formulario de product.product (variante) -->
+        <record id="product_product_purchase_history_form_view" model="ir.ui.view">
+            <field name="name">product.product.purchase_history.form</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <!-- Buscar la sección de compras (seller) y agregar el historial antes de variant_seller_ids -->
+                <xpath expr="//field[@name='variant_seller_ids']" position="before">
+                    <separator string="Historial de Compras - Últimas Compras Realizadas" colspan="2"/>
+                    <!-- Vista embebida que muestra el historial de compras -->
+                    <field name="id" invisible="1"/>
+                    <field name="purchase_history_ids" nolabel="1" colspan="2" context="{'product_id': id}" readonly="1">
+                        <tree string="Historial de Compras de Variante" create="false" edit="false" delete="false">
+                            <field name="partner_name" string="Proveedor"/>
+                            <field name="purchase_order_name" string="N° Orden"/>
+                            <field name="date_order" string="Fecha" widget="date"/>
+                            <field name="product_qty" string="Cantidad"/>
+                            <field name="product_uom" string="Unidad de Medida"/>
+                            <field name="price_unit" string="Precio Unitario"/>
+                            <field name="currency_id" string="Moneda"/>
+                            <field name="state" string="Estado"/>
+                        </tree>
+                    </field>
+                </xpath>
+                <!-- Hacer invisible el campo variant_seller_ids -->
+                <xpath expr="//field[@name='variant_seller_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

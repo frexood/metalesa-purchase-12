@@ -23,6 +23,7 @@
         'views/menu_views.xml',
         'views/purchase_view.xml',
         'views/stock_move_view.xml',
+        'views/product_purchase_history_view.xml',
         "wizards/wz_purchase_order_date_planned.xml",
         "wizards/wz_purchase_order_duplicate_line.xml",
         "wizards/wz_purchase_order_where_to_store.xml",

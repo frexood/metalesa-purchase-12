@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo import models, fields, api, exceptions, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, AccessError
 
 from pytz import timezone
 
