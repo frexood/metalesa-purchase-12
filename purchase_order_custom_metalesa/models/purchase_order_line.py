@@ -12,19 +12,24 @@ class PurchaseOrderLine(models.Model):
         ('doesnot_apply', 'NO APLICA'),
     ], string="Dónde almacenar", required=False)
 
+    @api.model
+    def create(self, vals):
+        """
+        Al CREAR una línea nueva cuyo producto sea cualquier variante de
+        SERVICIO DE TRANSPORTE, rellena automáticamente 'Dónde almacenar'
+        con 'NO APLICA' (requisito confirmado por César Valero, 15/12).
 
-    @api.onchange('product_id')
-    def _onchange_product_id_check_transport(self):
+        Solo se aplica si el valor no viene ya informado, para no pisar una
+        elección explícita del usuario.
         """
-        Detecta cambios en el campo product_id.
-        Si el nombre del producto contiene 'TRANSPORTE', asigna 'doesnot_apply'.
-        """
-        if self.product_id and self.product_id.name:
-            # Usamos .upper() para que funcione con 'Transporte', 'transporte' o 'TRANSPORTE'
-            if 'TRANSPORTE' in self.product_id.name.upper():
-                self.where_to_store = 'doesnot_apply'
-            else:
-                # Opcional: Si quieres reiniciar el valor si cambian a un producto que NO es transporte
-                # Si no quieres que se reinicie, borra las siguientes lineas:
-                if self.where_to_store == 'doesnot_apply':
-                     self.where_to_store = False
+        if not vals.get('where_to_store') and vals.get('product_id'):
+            product = self.env['product.product'].browse(vals['product_id'])
+            if product and product.name and 'TRANSPORTE' in product.name.upper():
+                vals['where_to_store'] = 'doesnot_apply'
+        return super(PurchaseOrderLine, self).create(vals)
+
+    # NOTA (EVO663): El onchange '_onchange_product_id_check_transport' se
+    # eliminó por petición de César Valero (15/12). Era redundante porque al
+    # duplicar el campo 'Dónde almacenar' ya se copia, y el usuario siempre lo
+    # informa manualmente. El relleno automático de 'NO APLICA' para transporte
+    # ahora se hace SOLO al crear la línea (método create de arriba).
