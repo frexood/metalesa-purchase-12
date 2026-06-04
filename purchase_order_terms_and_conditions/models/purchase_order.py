@@ -45,18 +45,24 @@ class PurchaseOrderExtends(models.Model):
     def copy(self, default=None):
         """
         Evita que 'notes' se llene al duplicar la orden.
-        También limpia el campo account_analytic_id en las líneas del pedido.
+        Limpia la CA/UC (account_analytic_id) en las líneas del pedido SALVO
+        cuando el producto sea cualquier variante de SERVICIO DE TRANSPORTE,
+        en cuyo caso se conserva (requisito confirmado por César Valero, 03/12).
         """
         default = dict(default or {})
         default['notes'] = False
 
         default['plantilla_ca_id'] = False
 
-        # Copiar las líneas manualmente con modificación del campo account_analytic_id
+        # Copiar las líneas manualmente.
+        # - Producto de transporte  -> se MANTIENE la CA/UC (account_analytic_id)
+        # - Resto de productos       -> se ELIMINA la CA/UC al duplicar
         new_order_lines = []
         for line in self.order_line:
             line_vals = line.copy_data()[0]  # obtenemos los datos como dict
-            line_vals['account_analytic_id'] = False  # limpiamos el campo
+            product_name = (line.product_id.name or '').upper()
+            if 'TRANSPORTE' not in product_name:
+                line_vals['account_analytic_id'] = False  # limpiamos la CA/UC
             new_order_lines.append((0, 0, line_vals))
 
         default['order_line'] = new_order_lines
