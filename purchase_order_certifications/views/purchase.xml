@@ -52,5 +52,33 @@
                 </xpath>
             </field>
         </record>
+
+
+        <!-- EVO698: añadir filtro/agrupación por Proyecto / Cuenta Analítica
+             en la vista de búsqueda de Líneas de Pedido, para poder discriminar
+             por línea (un pedido puede tener varias líneas con proyectos distintos). -->
+        <record id="purchase_order_line_search_analytic" model="ir.ui.view">
+            <field name="name">purchase.order.line.search.analytic.metalesa</field>
+            <field name="model">purchase.order.line</field>
+            <field name="inherit_id" ref="purchase.purchase_order_line_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='product_id']" position="after">
+                    <field name="account_analytic_id" string="Proyecto / Cuenta Analítica"/>
+                </xpath>
+            </field>
+        </record>
+        
+
+        <record id="purchase_order_search_rename_project" model="ir.ui.view">
+            <field name="name">purchase.order.search.rename.project.metalesa</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase_analytic.purchase_order_view_search_inherit_purchase_analytic"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='project_id']" position="attributes">
+                    <attribute name="string">Proyecto / Cuenta Analítica</attribute>
+                </xpath>
+            </field>
+        </record>
+
     </data>
 </odoo>
