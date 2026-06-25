@@ -12,7 +12,7 @@ class AccountInvoice(models.Model):
         if self.type == 'in_invoice':
             for record in self.invoice_line_ids:
                 record._onchange_facturar_a_mano()
-    
+
 class AccountInvoiceLine(models.Model):
     _inherit = "account.invoice.line"
 
@@ -32,17 +32,30 @@ class AccountInvoiceLine(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             purchase_order_line_id = vals.get('purchase_line_id')
+            if not purchase_order_line_id:
+                continue
             purchase_order_line = self.env['purchase.order.line'].browse(purchase_order_line_id)
+            if not purchase_order_line.exists():
+                continue
 
-            account_id = self.search([]).browse(purchase_order_line_id)
-            if account_id:
-                vals.update(
-                    price_unit_uop=purchase_order_line.price_unit_uop,
-                    product_uop_id=purchase_order_line.product_uop.id,
-                    product_uop_qty=purchase_order_line.product_uop_qty,
-                    qty_received=purchase_order_line.qty_received,
-                    cantidad_recibida=purchase_order_line.product_uop_qty * purchase_order_line.qty_received / purchase_order_line.product_qty
+            # Evitar división por cero cuando product_qty es 0
+            # (provocaba que el wizard de facturación se quedara colgado).
+            if purchase_order_line.product_qty:
+                cantidad_recibida = (
+                    purchase_order_line.product_uop_qty
+                    * purchase_order_line.qty_received
+                    / purchase_order_line.product_qty
                 )
+            else:
+                cantidad_recibida = 0.0
+
+            vals.update(
+                price_unit_uop=purchase_order_line.price_unit_uop,
+                product_uop_id=purchase_order_line.product_uop.id,
+                product_uop_qty=purchase_order_line.product_uop_qty,
+                qty_received=purchase_order_line.qty_received,
+                cantidad_recibida=cantidad_recibida,
+            )
         return super(AccountInvoiceLine, self).create(vals_list)
 
     @api.depends('cantidad_recibida', 'price_unit_uop')

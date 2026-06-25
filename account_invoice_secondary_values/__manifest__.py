@@ -6,7 +6,7 @@
     'website': "http://www.praxya.com",
     "license": "AGPL-3",
     'category': 'Accounting',
-    'version': '0.4',
+    'version': '0.5',
     'depends': [
         'account',
         'purchase',
