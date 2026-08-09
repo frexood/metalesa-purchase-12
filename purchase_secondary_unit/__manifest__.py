@@ -2,7 +2,7 @@
 
 {
     "name": "Metalesa - Purchase Secondary Unit",
-    "version": "12.0.0.4",
+    "version": "12.0.0.5",
     "summary": "Adds second unit of purchase on products",
     "author": "Praxya",
     "license": "AGPL-3",
@@ -16,6 +16,7 @@
     ],
     'data': [
         # 'data/dp_data.xml',
+        'data/purchase_order_server_action.xml',
         'views/purchase_order_view.xml',
         'views/product_view.xml',
     ],
