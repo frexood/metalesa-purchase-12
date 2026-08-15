@@ -1,0 +1,270 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#   * purchase_picking_batch_invoicing
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-15 11:08+0000\n"
+"PO-Revision-Date: 2026-08-15 00:00+0200\n"
+"Last-Translator: TEPUI DEV SOLUCIONES S.L.\n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. module: purchase_picking_batch_invoicing
+#: code:addons/purchase_picking_batch_invoicing/wizard/purchase_picking_invoice_wizard.py:96
+#, python-format
+msgid ""
+"All moves in the selected receipts must come from a purchase order. Moves "
+"without a purchase order line: %s"
+msgstr ""
+"Todos los movimientos de los albaranes seleccionados deben proceder de un "
+"pedido de compra. Movimientos sin línea de compra: %s"
+
+#. module: purchase_picking_batch_invoicing
+#: model_terms:ir.ui.view,arch_db:purchase_picking_batch_invoicing.purchase_picking_invoice_wizard_form
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: purchase_picking_batch_invoicing
+#: selection:purchase.picking.invoice.wizard,grouping:0
+msgid "Consolidate compatible receipts into one bill"
+msgstr "Consolidar albaranes compatibles en una factura"
+
+#. module: purchase_picking_batch_invoicing
+#: model:ir.model.fields,help:purchase_picking_batch_invoicing.field_purchase_picking_invoice_wizard__grouping
+msgid ""
+"Consolidate compatible receipts: creates a single vendor bill when company, "
+"vendor, currency, fiscal position and payment terms match.\n"
+"Receipts with different conditions are placed in separate vendor bills.\n"
+"Create one bill per receipt: creates an independent vendor bill for each "
+"selected receipt."
+msgstr ""
+"Consolidar albaranes compatibles: crea una sola factura cuando coinciden la "
+"empresa, el proveedor, la moneda, la posición fiscal y los términos de "
+"pago.\n"
+"Los albaranes con condiciones diferentes se incluyen en facturas separadas.\n"
+"Crear una factura por albarán: crea una factura independiente para cada "
+"albarán seleccionado."
+
+#. module: purchase_picking_batch_invoicing
+#: model_terms:ir.ui.view,arch_db:purchase_picking_batch_invoicing.purchase_picking_invoice_wizard_form
+msgid "Create Vendor Bills"
+msgstr "Crear facturas de proveedor"
+
+#. module: purchase_picking_batch_invoicing
+#: model:ir.model,name:purchase_picking_batch_invoicing.model_purchase_picking_invoice_wizard
+msgid "Create Vendor Bills from Purchase Receipts"
+msgstr "Crear facturas de proveedor desde albaranes de compra"
+
+#. module: purchase_picking_batch_invoicing
+#: model:ir.actions.act_window,name:purchase_picking_batch_invoicing.action_purchase_picking_invoice_wizard
+#: model_terms:ir.ui.view,arch_db:purchase_picking_batch_invoicing.purchase_picking_invoice_wizard_form
+msgid "Create Vendor Bills from Receipts"
+msgstr "Crear facturas de proveedor desde recepciones"
+
+#. module: purchase_picking_batch_invoicing
+#: selection:purchase.picking.invoice.wizard,grouping:0
+msgid "Create one bill per receipt"
+msgstr "Crear una factura por albarán"
+
+#. module: purchase_picking_batch_invoicing
+#: model:ir.model.fields,field_description:purchase_picking_batch_invoicing.field_purchase_picking_invoice_wizard__create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: purchase_picking_batch_invoicing
+#: model:ir.model.fields,field_description:purchase_picking_batch_invoicing.field_purchase_picking_invoice_wizard__create_date
+msgid "Created on"
+msgstr "Creado el"
+
+#. module: purchase_picking_batch_invoicing
+#: model:ir.model.fields,field_description:purchase_picking_batch_invoicing.field_purchase_picking_invoice_wizard__display_name
+msgid "Display Name"
+msgstr "Nombre mostrado"
+
+#. module: purchase_picking_batch_invoicing
+#: model:ir.model.fields,field_description:purchase_picking_batch_invoicing.field_purchase_picking_invoice_wizard__grouping
+msgid "Grouping"
+msgstr "Agrupación"
+
+#. module: purchase_picking_batch_invoicing
+#: model:ir.model.fields,field_description:purchase_picking_batch_invoicing.field_purchase_picking_invoice_wizard__id
+msgid "ID"
+msgstr "ID"
+
+#. module: purchase_picking_batch_invoicing
+#: model:ir.model,name:purchase_picking_batch_invoicing.model_account_invoice
+msgid "Invoice"
+msgstr "Factura"
+
+#. module: purchase_picking_batch_invoicing
+#: model:ir.model,name:purchase_picking_batch_invoicing.model_account_invoice_line
+msgid "Invoice Line"
+msgstr "Línea de factura"
+
+#. module: purchase_picking_batch_invoicing
+#: selection:stock.picking,purchase_invoice_state:0
+msgid "Invoiced"
+msgstr "Facturado"
+
+#. module: purchase_picking_batch_invoicing
+#: model:ir.model.fields,field_description:purchase_picking_batch_invoicing.field_purchase_picking_invoice_wizard____last_update
+msgid "Last Modified on"
+msgstr "Última modificación el"
+
+#. module: purchase_picking_batch_invoicing
+#: model:ir.model.fields,field_description:purchase_picking_batch_invoicing.field_purchase_picking_invoice_wizard__write_uid
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: purchase_picking_batch_invoicing
+#: model:ir.model.fields,field_description:purchase_picking_batch_invoicing.field_purchase_picking_invoice_wizard__write_date
+msgid "Last Updated on"
+msgstr "Última actualización el"
+
+#. module: purchase_picking_batch_invoicing
+#: code:addons/purchase_picking_batch_invoicing/wizard/purchase_picking_invoice_wizard.py:301
+#, python-format
+msgid "No vendor bill could be created."
+msgstr "No se ha podido crear ninguna factura de proveedor."
+
+#. module: purchase_picking_batch_invoicing
+#: selection:stock.picking,purchase_invoice_state:0
+msgid "Not Applicable"
+msgstr "No aplicable"
+
+#. module: purchase_picking_batch_invoicing
+#: code:addons/purchase_picking_batch_invoicing/wizard/purchase_picking_invoice_wizard.py:58
+#, python-format
+msgid ""
+"One of the selected receipts is being invoiced by another user. Please try "
+"again when that operation has finished."
+msgstr ""
+"Uno de los albaranes seleccionados está siendo facturado por otro usuario. "
+"Inténtelo de nuevo cuando haya finalizado esa operación."
+
+#. module: purchase_picking_batch_invoicing
+#: code:addons/purchase_picking_batch_invoicing/wizard/purchase_picking_invoice_wizard.py:77
+#, python-format
+msgid "Only completed vendor receipts can be invoiced. Invalid receipts: %s"
+msgstr ""
+"Solo pueden facturarse recepciones de proveedor terminadas. Albaranes no "
+"válidos: %s"
+
+#. module: purchase_picking_batch_invoicing
+#: selection:stock.picking,purchase_invoice_state:0
+msgid "Partially Invoiced"
+msgstr "Facturado parcialmente"
+
+#. module: purchase_picking_batch_invoicing
+#: model:ir.model.fields,field_description:purchase_picking_batch_invoicing.field_stock_move__purchase_invoice_line_ids
+msgid "Purchase Bill Lines"
+msgstr "Líneas de factura de proveedor"
+
+#. module: purchase_picking_batch_invoicing
+#: model:ir.model.fields,field_description:purchase_picking_batch_invoicing.field_stock_picking__purchase_invoice_state
+msgid "Purchase Billing Status"
+msgstr "Estado de facturación de compra"
+
+#. module: purchase_picking_batch_invoicing
+#: model:ir.model.fields,field_description:purchase_picking_batch_invoicing.field_account_invoice_line__purchase_receipt_id
+msgid "Purchase Receipt"
+msgstr "Recepción de compra"
+
+#. module: purchase_picking_batch_invoicing
+#: model:ir.model.fields,field_description:purchase_picking_batch_invoicing.field_account_invoice_line__purchase_stock_move_ids
+msgid "Purchase Receipt Moves"
+msgstr "Movimientos de recepción de compra"
+
+#. module: purchase_picking_batch_invoicing
+#: model:ir.model.fields,field_description:purchase_picking_batch_invoicing.field_account_invoice__purchase_receipt_ids
+#: model:ir.model.fields,field_description:purchase_picking_batch_invoicing.field_purchase_picking_invoice_wizard__picking_ids
+msgid "Purchase Receipts"
+msgstr "Recepciones de compra"
+
+#. module: purchase_picking_batch_invoicing
+#: model_terms:ir.ui.view,arch_db:purchase_picking_batch_invoicing.stock_picking_search_purchase_invoice
+msgid "Purchase Receipts to Invoice"
+msgstr "Recepciones de compra a facturar"
+
+#. module: purchase_picking_batch_invoicing
+#: code:addons/purchase_picking_batch_invoicing/wizard/purchase_picking_invoice_wizard.py:67
+#, python-format
+msgid "Select at least one purchase receipt."
+msgstr "Seleccione al menos un albarán de compra."
+
+#. module: purchase_picking_batch_invoicing
+#: code:addons/purchase_picking_batch_invoicing/wizard/purchase_picking_invoice_wizard.py:114
+#, python-format
+msgid ""
+"Some moves in the selected receipts are already included in a non-cancelled "
+"vendor bill: %s"
+msgstr ""
+"Algunos movimientos de los albaranes seleccionados ya están incluidos en una "
+"factura de proveedor no cancelada: %s"
+
+#. module: purchase_picking_batch_invoicing
+#: model:ir.model,name:purchase_picking_batch_invoicing.model_stock_move
+msgid "Stock Move"
+msgstr "Movimiento de existencias"
+
+#. module: purchase_picking_batch_invoicing
+#: code:addons/purchase_picking_batch_invoicing/models/account_invoice.py:73
+#, python-format
+msgid ""
+"The quantity and unit of measure of an invoice line generated from a "
+"purchase receipt cannot be modified. Delete the line and invoice the receipt "
+"again."
+msgstr ""
+"No se pueden modificar la cantidad ni la unidad de una línea de factura "
+"generada desde un albarán de compra. Elimine la línea y vuelva a facturar el "
+"albarán."
+
+#. module: purchase_picking_batch_invoicing
+#: code:addons/purchase_picking_batch_invoicing/wizard/purchase_picking_invoice_wizard.py:139
+#, python-format
+msgid ""
+"The selected quantity %(selected)s exceeds the remaining billable quantity "
+"%(remaining)s on purchase order %(order)s for product %(product)s."
+msgstr ""
+"La cantidad seleccionada %(selected)s supera la cantidad pendiente de "
+"facturar %(remaining)s del pedido de compra %(order)s para el producto "
+"%(product)s."
+
+#. module: purchase_picking_batch_invoicing
+#: code:addons/purchase_picking_batch_invoicing/wizard/purchase_picking_invoice_wizard.py:101
+#, python-format
+msgid "The selected receipts do not contain billable purchase moves."
+msgstr ""
+"Los albaranes seleccionados no contienen movimientos de compra facturables."
+
+#. module: purchase_picking_batch_invoicing
+#: selection:stock.picking,purchase_invoice_state:0
+msgid "To Invoice"
+msgstr "Pendiente de facturar"
+
+#. module: purchase_picking_batch_invoicing
+#: model:ir.model,name:purchase_picking_batch_invoicing.model_stock_picking
+msgid "Transfer"
+msgstr "Transferencia"
+
+#. module: purchase_picking_batch_invoicing
+#: model:ir.model.fields,field_description:purchase_picking_batch_invoicing.field_stock_picking__purchase_invoice_count
+msgid "Vendor Bill Count"
+msgstr "Cantidad de facturas de proveedor"
+
+#. module: purchase_picking_batch_invoicing
+#: model:ir.model.fields,field_description:purchase_picking_batch_invoicing.field_stock_picking__purchase_invoice_ids
+#: model_terms:ir.ui.view,arch_db:purchase_picking_batch_invoicing.stock_picking_form_purchase_invoice
+msgid "Vendor Bills"
+msgstr "Facturas de proveedor"
+
+#. module: purchase_picking_batch_invoicing
+#: code:addons/purchase_picking_batch_invoicing/wizard/purchase_picking_invoice_wizard.py:291
+#, python-format
+msgid "Vendor blocked. Contact Accounting or Quality: %s"
+msgstr "Proveedor bloqueado. Consulte con Contabilidad o Calidad: %s"

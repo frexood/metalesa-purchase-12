@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="stock_picking_form_purchase_invoice" model="ir.ui.view">
+        <field name="name">stock.picking.form.purchase.invoice</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_purchase_invoices" type="object"
+                        class="oe_stat_button" icon="fa-pencil-square-o"
+                        attrs="{'invisible': [('purchase_invoice_count', '=', 0)]}">
+                    <field name="purchase_invoice_count" widget="statinfo"
+                           string="Vendor Bills"/>
+                </button>
+            </xpath>
+            <field name="state" position="after">
+                <field name="purchase_invoice_state"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="stock_picking_tree_purchase_invoice" model="ir.ui.view">
+        <field name="name">stock.picking.tree.purchase.invoice</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="arch" type="xml">
+            <field name="state" position="after">
+                <field name="purchase_invoice_state"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="stock_picking_search_purchase_invoice" model="ir.ui.view">
+        <field name="name">stock.picking.search.purchase.invoice</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+        <field name="arch" type="xml">
+            <filter name="done" position="after">
+                <filter name="purchase_receipts_to_invoice"
+                        string="Purchase Receipts to Invoice"
+                        domain="[('purchase_invoice_state', 'in', ('to_invoice', 'partial'))]"/>
+            </filter>
+        </field>
+    </record>
+</odoo>
